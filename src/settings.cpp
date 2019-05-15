@@ -186,8 +186,12 @@ void Settings::LoadDefaultsOrSave(std::string path)
 		weaponSetting[XORSTR("AimStep")][XORSTR("max")] = i.second.aimStepMax;
 		weaponSetting[XORSTR("RCS")][XORSTR("Enabled")] = i.second.rcsEnabled;
 		weaponSetting[XORSTR("RCS")][XORSTR("AlwaysOn")] = i.second.rcsAlwaysOn;
-		weaponSetting[XORSTR("RCS")][XORSTR("AmountX")] = i.second.rcsAmountX;
-		weaponSetting[XORSTR("RCS")][XORSTR("AmountY")] = i.second.rcsAmountY;
+		weaponSetting[XORSTR("RCS")][XORSTR("AmountXMin")] = i.second.rcsAmountXMin;
+		weaponSetting[XORSTR("RCS")][XORSTR("AmountXMax")] = i.second.rcsAmountXMax;
+		weaponSetting[XORSTR("RCS")][XORSTR("AmountXSpeed")] = i.second.rcsAmountXSpeed;
+		weaponSetting[XORSTR("RCS")][XORSTR("AmountYMin")] = i.second.rcsAmountYMin;
+		weaponSetting[XORSTR("RCS")][XORSTR("AmountYMax")] = i.second.rcsAmountYMax;
+		weaponSetting[XORSTR("RCS")][XORSTR("AmountYSpeed")] = i.second.rcsAmountYSpeed;
 		weaponSetting[XORSTR("AutoPistol")][XORSTR("Enabled")] = i.second.autoPistolEnabled;
 		weaponSetting[XORSTR("AutoShoot")][XORSTR("Enabled")] = i.second.autoShootEnabled;
 		weaponSetting[XORSTR("AutoScope")][XORSTR("Enabled")] = i.second.autoScopeEnabled;
@@ -230,6 +234,9 @@ void Settings::LoadDefaultsOrSave(std::string path)
 	settings[XORSTR("Triggerbot")][XORSTR("RandomDelay")][XORSTR("enabled")] = Settings::Triggerbot::RandomDelay::enabled;
 	settings[XORSTR("Triggerbot")][XORSTR("RandomDelay")][XORSTR("lowBound")] = Settings::Triggerbot::RandomDelay::lowBound;
 	settings[XORSTR("Triggerbot")][XORSTR("RandomDelay")][XORSTR("highBound")] = Settings::Triggerbot::RandomDelay::highBound;
+	settings[XORSTR("Triggerbot")][XORSTR("SootTime")][XORSTR("enabled")] = Settings::Triggerbot::RandomDelay::enabled;
+	settings[XORSTR("Triggerbot")][XORSTR("SootTime")][XORSTR("lowBound")] = Settings::Triggerbot::RandomDelay::lowBound;
+	settings[XORSTR("Triggerbot")][XORSTR("SootTime")][XORSTR("highBound")] = Settings::Triggerbot::RandomDelay::highBound;
 
 	settings[XORSTR("ESP")][XORSTR("enabled")] = Settings::ESP::enabled;
 	settings[XORSTR("ESP")][XORSTR("backend")] = (int)Settings::ESP::backend;
@@ -644,8 +651,12 @@ void Settings::LoadConfig(std::string path)
 				.autoAimFov = weaponSetting[XORSTR( "AutoAim" )][XORSTR( "FOV" )].asFloat(),
 				.aimStepMin = weaponSetting[XORSTR( "AimStep" )][XORSTR( "min" )].asFloat(),
 				.aimStepMax = weaponSetting[XORSTR( "AimStep" )][XORSTR( "max" )].asFloat(),
-				.rcsAmountX = weaponSetting[XORSTR( "RCS" )][XORSTR( "AmountX" )].asFloat(),
-				.rcsAmountY = weaponSetting[XORSTR( "RCS" )][XORSTR( "AmountY" )].asFloat(),
+				.rcsAmountXMin = weaponSetting[XORSTR( "RCS" )][XORSTR( "AmountXMin" )].asFloat(),
+				.rcsAmountXMax = weaponSetting[XORSTR( "RCS" )][XORSTR( "AmountXMax" )].asFloat(),
+				.rcsAmountXSpeed = weaponSetting[XORSTR( "RCS" )][XORSTR( "AmountXSpeed" )].asFloat(),
+				.rcsAmountYMin = weaponSetting[XORSTR( "RCS" )][XORSTR( "AmountYMin" )].asFloat(),
+				.rcsAmountYMax = weaponSetting[XORSTR( "RCS" )][XORSTR( "AmountYMax" )].asFloat(),
+				.rcsAmountYSpeed = weaponSetting[XORSTR( "RCS" )][XORSTR( "AmountYSpeed" )].asFloat(),
 				.autoWallValue = weaponSetting[XORSTR( "AutoWall" )][XORSTR( "Value" )].asFloat(),
 				.spreadLimit = weaponSetting[XORSTR( "SpreadLimit" )][XORSTR( "Value" )].asFloat(),
 		};

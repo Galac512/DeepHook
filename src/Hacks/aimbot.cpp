@@ -6,6 +6,7 @@
 #include "../Utils/entity.h"
 #include "../settings.h"
 #include "../interfaces.h"
+#include <math.h>
 
 
 // Default aimbot settings
@@ -44,8 +45,12 @@ bool Settings::Aimbot::AutoShoot::velocityCheck = false;
 bool Settings::Aimbot::AutoShoot::autoscope = false;
 bool Settings::Aimbot::RCS::enabled = false;
 bool Settings::Aimbot::RCS::always_on = false;
-float Settings::Aimbot::RCS::valueX = 2.0f;
-float Settings::Aimbot::RCS::valueY = 2.0f;
+float Settings::Aimbot::RCS::valueXMin = 0.5f;
+float Settings::Aimbot::RCS::valueXMax = 1.5f;
+float Settings::Aimbot::RCS::valueXSpeed = 0.1f;
+float Settings::Aimbot::RCS::valueYMin = 0.5f;
+float Settings::Aimbot::RCS::valueYMax = 1.5f;
+float Settings::Aimbot::RCS::valueYSpeed = 0.5f;
 bool Settings::Aimbot::AutoCrouch::enabled = false;
 bool Settings::Aimbot::NoShoot::enabled = false;
 bool Settings::Aimbot::IgnoreJump::enabled = false;
@@ -450,17 +455,19 @@ static void RCS(QAngle& angle, C_BasePlayer* player, CUserCmd* cmd)
 	C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
 	QAngle CurrentPunch = *localplayer->GetAimPunchAngle();
 
+	float valueX = Settings::Aimbot::RCS::valueXMin+(Settings::Aimbot::RCS::valueXMax-Settings::Aimbot::RCS::valueXMin)*(1.f-std::exp(-localplayer->GetShotsFired()*std::pow(Settings::Aimbot::RCS::valueXSpeed, 4.f)));
+float valueY = Settings::Aimbot::RCS::valueYMin+(Settings::Aimbot::RCS::valueYMax-Settings::Aimbot::RCS::valueYMin)*(1.f-std::exp(-localplayer->GetShotsFired()*std::pow(Settings::Aimbot::RCS::valueYSpeed, 4.f)));
 	if ( Settings::Aimbot::silent || hasTarget )
 	{
-		angle.x -= CurrentPunch.x * Settings::Aimbot::RCS::valueX;
-		angle.y -= CurrentPunch.y * Settings::Aimbot::RCS::valueY;
+		angle.x -= CurrentPunch.x * valueX;
+		angle.y -= CurrentPunch.y * valueY;
 	}
 	else if (localplayer->GetShotsFired() > 1)
 	{
 		QAngle NewPunch = { CurrentPunch.x - RCSLastPunch.x, CurrentPunch.y - RCSLastPunch.y, 0 };
 
-		angle.x -= NewPunch.x * Settings::Aimbot::RCS::valueX;
-		angle.y -= NewPunch.y * Settings::Aimbot::RCS::valueY;
+		angle.x -= NewPunch.x * valueX;
+		angle.y -= NewPunch.y * valueY;
 	}
 
 	RCSLastPunch = CurrentPunch;
@@ -890,8 +897,12 @@ void Aimbot::UpdateValues()
 	Settings::Aimbot::AutoShoot::autoscope = currentWeaponSetting.autoScopeEnabled;
 	Settings::Aimbot::RCS::enabled = currentWeaponSetting.rcsEnabled;
 	Settings::Aimbot::RCS::always_on = currentWeaponSetting.rcsAlwaysOn;
-	Settings::Aimbot::RCS::valueX = currentWeaponSetting.rcsAmountX;
-	Settings::Aimbot::RCS::valueY = currentWeaponSetting.rcsAmountY;
+	Settings::Aimbot::RCS::valueXMin = currentWeaponSetting.rcsAmountXMin;
+	Settings::Aimbot::RCS::valueXMax = currentWeaponSetting.rcsAmountXMax;
+	Settings::Aimbot::RCS::valueXSpeed = currentWeaponSetting.rcsAmountXSpeed;
+	Settings::Aimbot::RCS::valueYMin = currentWeaponSetting.rcsAmountYMin;
+	Settings::Aimbot::RCS::valueYMax = currentWeaponSetting.rcsAmountYMax;
+	Settings::Aimbot::RCS::valueYSpeed = currentWeaponSetting.rcsAmountYSpeed;
 	Settings::Aimbot::NoShoot::enabled = currentWeaponSetting.noShootEnabled;
 	Settings::Aimbot::IgnoreJump::enabled = currentWeaponSetting.ignoreJumpEnabled;
 	Settings::Aimbot::Smooth::Salting::enabled = currentWeaponSetting.smoothSaltEnabled;

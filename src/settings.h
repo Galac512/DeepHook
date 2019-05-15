@@ -174,8 +174,12 @@ struct AimbotWeapon_t
 		  autoAimFov = 180.0f,
 		  aimStepMin = 25.0f,
 		  aimStepMax = 35.0f,
-		  rcsAmountX = 2.0f,
-		  rcsAmountY = 2.0f,
+		  rcsAmountXMin = 0.5f,
+		  rcsAmountXMax = 1.5f,
+		  rcsAmountXSpeed = 0.1f,
+		  rcsAmountYMin = 0.5f,
+		  rcsAmountYMax = 1.5f,
+		  rcsAmountYSpeed = 0.5f,
 		  autoWallValue = 10.0f,
 		  spreadLimit = 1.0f;
 	bool desiredBones[31];
@@ -212,8 +216,12 @@ struct AimbotWeapon_t
 			this->aimStepMax == another.aimStepMax &&
 			this->rcsEnabled == another.rcsEnabled &&
 			this->rcsAlwaysOn == another.rcsAlwaysOn &&
-			this->rcsAmountX == another.rcsAmountX &&
-			this->rcsAmountY == another.rcsAmountY &&
+			this->rcsAmountXMin == another.rcsAmountXMin &&
+			this->rcsAmountXMax == another.rcsAmountXMax &&
+			this->rcsAmountXSpeed == another.rcsAmountXSpeed &&
+			this->rcsAmountYMin == another.rcsAmountYMin &&
+			this->rcsAmountYMax == another.rcsAmountYMax &&
+			this->rcsAmountYSpeed == another.rcsAmountYSpeed &&
 			this->autoPistolEnabled == another.autoPistolEnabled &&
 			this->autoShootEnabled == another.autoShootEnabled &&
 			this->autoScopeEnabled == another.autoScopeEnabled &&
@@ -404,8 +412,12 @@ namespace Settings
 		{
 			extern bool enabled;
 			extern bool always_on;
-			extern float valueX;
-			extern float valueY;
+			extern float valueXMin;
+			extern float valueXMax;
+			extern float valueXSpeed;
+			extern float valueYMin;
+			extern float valueYMax;
+			extern float valueYSpeed;
 		}
 
 		namespace AutoPistol
@@ -487,8 +499,16 @@ namespace Settings
 		namespace RandomDelay
 		{
 			extern bool enabled;
-			extern int lowBound; // in ms
-			extern int highBound;// in ms
+			extern int lowBound;  // in ms
+			extern int highBound; // in ms
+			extern int lastRoll;
+		}
+
+		namespace ShootTime
+		{
+			extern bool enabled;
+			extern int lowBound;  // in ms
+			extern int highBound; // in ms
 			extern int lastRoll;
 		}
 	}

@@ -21,27 +21,69 @@ bool Settings::Triggerbot::RandomDelay::enabled = true;
 int Settings::Triggerbot::RandomDelay::lowBound = 20;
 int Settings::Triggerbot::RandomDelay::highBound = 35;
 int Settings::Triggerbot::RandomDelay::lastRoll = 0;
+bool Settings::Triggerbot::ShootTime::enabled = true;
+int Settings::Triggerbot::ShootTime::lowBound = 150;
+int Settings::Triggerbot::ShootTime::highBound = 300;
+int Settings::Triggerbot::ShootTime::lastRoll = 0;
 ButtonCode_t Settings::Triggerbot::key = ButtonCode_t::KEY_LALT;
 
 void Triggerbot::CreateMove(CUserCmd *cmd)
 {
 	if (!Settings::Triggerbot::enabled)
 		return;
-
-	if (!inputSystem->IsButtonDown(Settings::Triggerbot::key))
-		return;
-
+	
 	C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
 	if (!localplayer || !localplayer->GetAlive())
-		return;
-	
-	if (Settings::Triggerbot::Filters::flashCheck && localplayer->GetFlashBangTime() - globalVars->curtime > 2.0f)
 		return;
 
 	long currentTime_ms = Util::GetEpochTime();
 	static long timeStamp = currentTime_ms;
 	long oldTimeStamp;
 
+	static int localShootTimeMin = Settings::Triggerbot::ShootTime::lowBound;
+	static int localShootTimeMax = Settings::Triggerbot::ShootTime::highBound;
+	static int randomShootTimeDelay = 0;
+
+	if( localShootTimeMin != Settings::Triggerbot::ShootTime::lowBound || localShootTimeMax != Settings::Triggerbot::ShootTime::highBound ) // Done in case Low/high bounds change before the next triggerbot shot.
+	{
+		localShootTimeMin = Settings::Triggerbot::ShootTime::lowBound;
+		localShootTimeMax = Settings::Triggerbot::ShootTime::highBound;
+	}
+
+	C_BaseCombatWeapon* activeWeapon = (C_BaseCombatWeapon*) entityList->GetClientEntityFromHandle(localplayer->GetActiveWeapon());
+	if (!activeWeapon || activeWeapon->GetAmmo() == 0)
+		return;
+
+	ItemDefinitionIndex itemDefinitionIndex = *activeWeapon->GetItemDefinitionIndex();
+	if (itemDefinitionIndex == ItemDefinitionIndex::WEAPON_KNIFE || itemDefinitionIndex >= ItemDefinitionIndex::WEAPON_KNIFE_BAYONET)
+		return;
+
+	CSWeaponType weaponType = activeWeapon->GetCSWpnData()->GetWeaponType();
+	if (weaponType == CSWeaponType::WEAPONTYPE_C4 || weaponType == CSWeaponType::WEAPONTYPE_GRENADE)
+		return;
+
+	oldTimeStamp = timeStamp;
+	timeStamp = currentTime_ms;
+	if (Settings::Triggerbot::ShootTime::enabled && currentTime_ms - oldTimeStamp < randomShootTimeDelay)
+	{
+		timeStamp = oldTimeStamp;
+		
+		if (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_REVOLVER)
+			cmd->buttons |= IN_ATTACK2;
+		else
+			cmd->buttons |= IN_ATTACK;
+
+		Settings::Triggerbot::ShootTime::lastRoll = randomShootTimeDelay;
+		return;
+	}
+	else
+		randomShootTimeDelay = 0;
+
+	if (!inputSystem->IsButtonDown(Settings::Triggerbot::key))
+		return;
+
+	if (Settings::Triggerbot::Filters::flashCheck && localplayer->GetFlashBangTime() - globalVars->curtime > 2.0f)
+		return;
 
 	static int localMin = Settings::Triggerbot::RandomDelay::lowBound;
 	static int localMax = Settings::Triggerbot::RandomDelay::highBound;
@@ -84,8 +126,8 @@ void Triggerbot::CreateMove(CUserCmd *cmd)
 		trace->TraceRay(ray, 0x46004003, &traceFilter, &tr);
 	}
 
-	oldTimeStamp = timeStamp;
-	timeStamp = currentTime_ms;
+	//oldTimeStamp = timeStamp;
+	//timeStamp = currentTime_ms;
 
 	C_BasePlayer* player = (C_BasePlayer*) tr.m_pEntityHit;
 	if (!player)
@@ -137,18 +179,6 @@ void Triggerbot::CreateMove(CUserCmd *cmd)
 	if (Settings::Triggerbot::Filters::smokeCheck && LineGoesThroughSmoke(tr.startpos, tr.endpos, 1))
 		return;
 
-	C_BaseCombatWeapon* activeWeapon = (C_BaseCombatWeapon*) entityList->GetClientEntityFromHandle(localplayer->GetActiveWeapon());
-	if (!activeWeapon || activeWeapon->GetAmmo() == 0)
-		return;
-
-	ItemDefinitionIndex itemDefinitionIndex = *activeWeapon->GetItemDefinitionIndex();
-	if (itemDefinitionIndex == ItemDefinitionIndex::WEAPON_KNIFE || itemDefinitionIndex >= ItemDefinitionIndex::WEAPON_KNIFE_BAYONET)
-		return;
-
-	CSWeaponType weaponType = activeWeapon->GetCSWpnData()->GetWeaponType();
-	if (weaponType == CSWeaponType::WEAPONTYPE_C4 || weaponType == CSWeaponType::WEAPONTYPE_GRENADE)
-		return;
-
 	if (activeWeapon->GetNextPrimaryAttack() > globalVars->curtime)
 	{
 		if (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_REVOLVER)
@@ -172,6 +202,7 @@ void Triggerbot::CreateMove(CUserCmd *cmd)
 			Settings::Triggerbot::RandomDelay::lastRoll = randomDelay;
 
 		randomDelay = localMin + rand() % (localMax - localMin);
+		randomShootTimeDelay = localShootTimeMin + rand() % (localShootTimeMax - localShootTimeMin);
 	}
 	timeStamp = currentTime_ms;
 }

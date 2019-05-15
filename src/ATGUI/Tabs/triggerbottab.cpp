@@ -9,13 +9,13 @@ void Triggerbot::RenderTab()
 {
 	ImGui::Checkbox(XORSTR("Enabled"), &Settings::Triggerbot::enabled);
 	ImGui::Separator();
-	ImGui::Columns(2, nullptr, true);
+	ImGui::Columns(2, nullptr, false);
 	{
 		ImGui::BeginChild(XORSTR("TRIG1"), ImVec2(0, 0), true);
 		{
 			ImGui::Text(XORSTR("Keybind"));
 			ImGui::Separator();
-			ImGui::Columns(2, nullptr, true);
+			ImGui::Columns(2, nullptr, false);
 			{
 				ImGui::ItemSize(ImVec2(0.0f, 0.0f), 0.0f);
 				ImGui::Text(XORSTR("Trigger Key"));
@@ -28,7 +28,7 @@ void Triggerbot::RenderTab()
 			ImGui::Separator();
 			ImGui::Text(XORSTR("Random Delay"));
 			ImGui::Separator();
-			ImGui::Columns(2, nullptr, true);
+			ImGui::Columns(2, nullptr, false);
 			{
 				ImGui::Checkbox(XORSTR("Enabled"), &Settings::Triggerbot::RandomDelay::enabled);
 				if( Settings::Triggerbot::RandomDelay::lastRoll != 0 )
@@ -49,10 +49,35 @@ void Triggerbot::RenderTab()
 			}
 			ImGui::Columns(1);
 			ImGui::Separator();
+			ImGui::Text(XORSTR("Shoot Time"));
+			ImGui::Separator();
+			ImGui::Columns(2, nullptr, false);
+			{
+				ImGui::PushID(1);
+				ImGui::Checkbox(XORSTR("Enabled"), &Settings::Triggerbot::ShootTime::enabled);
+				ImGui::PopID();
+				if( Settings::Triggerbot::ShootTime::lastRoll != 0 )
+				{
+					ImGui::Text(XORSTR("Last shoot time: %dms"), Settings::Triggerbot::ShootTime::lastRoll);
+				}
+			}
+			ImGui::NextColumn();
+			{
+				ImGui::Text(XORSTR("Minimum ms"));
+				ImGui::SliderInt(XORSTR("##TRIGGERSHOOTTIMELOW"), &Settings::Triggerbot::ShootTime::lowBound, 10, 599);
+				if( Settings::Triggerbot::ShootTime::lowBound >= Settings::Triggerbot::ShootTime::highBound )
+				{
+					Settings::Triggerbot::ShootTime::highBound = Settings::Triggerbot::ShootTime::lowBound + 1;
+				}
+				ImGui::Text(XORSTR("Maximum ms"));
+				ImGui::SliderInt(XORSTR("##TRIGGERSHOOTTIMEHIGH"), &Settings::Triggerbot::ShootTime::highBound, (Settings::Triggerbot::ShootTime::lowBound+1), 600);
+			}
 
+			ImGui::Columns(1);
+			ImGui::Separator();
 			ImGui::Text(XORSTR("Auto Knife & Zeus"));
  			ImGui::Separator();
- 			ImGui::Columns(2, nullptr, true);
+ 			ImGui::Columns(2, nullptr, false);
  			{
  					ImGui::PushItemWidth(-1);
  					ImGui::Checkbox(XORSTR("Auto Knife"), &Settings::AutoKnife::enabled);
@@ -75,7 +100,7 @@ void Triggerbot::RenderTab()
 		{
 			ImGui::Text(XORSTR("Filter"));
 			ImGui::Separator();
-			ImGui::Columns(2, nullptr, true);
+			ImGui::Columns(2, nullptr, false);
 			{
 				ImGui::Checkbox(XORSTR("Enemies"), &Settings::Triggerbot::Filters::enemies);
 				ImGui::Checkbox(XORSTR("Walls"), &Settings::Triggerbot::Filters::walls);
