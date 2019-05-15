@@ -34,7 +34,7 @@ void Main::RenderWindow()
 
 	static int page = 0;
 
-	if (ImGui::Begin(XORSTR("Fuzion"), &Main::showWindow, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_ShowBorders))
+	if (ImGui::Begin(XORSTR("DeepHook"), &Main::showWindow, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar))
 	{
 		Settings::UI::Windows::Main::open = true;
 		ImVec2 temp = ImGui::GetWindowSize();
@@ -55,17 +55,8 @@ void Main::RenderWindow()
 		{
 			int distance = i == page ? 0 : i > page ? i - page : page - i;
 
-			ImGui::GetStyle().Colors[ImGuiCol_Button] = ImVec4(
-					Settings::UI::mainColor.Color().Value.x - (distance * 0.035f),
-					Settings::UI::mainColor.Color().Value.y - (distance * 0.035f),
-					Settings::UI::mainColor.Color().Value.z - (distance * 0.035f),
-					Settings::UI::mainColor.Color().Value.w
-			);
-
 			if (ImGui::Button(tabs[i], ImVec2(ImGui::GetWindowSize().x / IM_ARRAYSIZE(tabs) - 9, 0)))
 				page = i;
-
-			ImGui::GetStyle().Colors[ImGuiCol_Button] = Settings::UI::accentColor.Color();
 
 			if (i < IM_ARRAYSIZE(tabs) - 1)
 				ImGui::SameLine();

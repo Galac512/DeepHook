@@ -259,7 +259,7 @@ void Misc::RenderTab()
 			}
 			ImGui::NextColumn();
 			{
-				if (ImGui::Button(XORSTR("Add Info"), ImVec2(-1, 0)))
+				if (ImGui::Button(XORSTR("Add Info"), ImVec2(-0, 0)))
 					ImGui::OpenPopup(XORSTR("addinfo_throw"));
 
 				ImGui::SetNextWindowSize(ImVec2(565, 268), ImGuiSetCond_Always);

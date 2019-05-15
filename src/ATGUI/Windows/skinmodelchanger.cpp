@@ -23,17 +23,8 @@ void TabButtons()
 	{
 		int distance = i == page ? 0 : i > page ? i - page : page - i;
 
-		ImGui::GetStyle().Colors[ImGuiCol_Button] = ImVec4(
-				Settings::UI::mainColor.Color().Value.x - (distance * 0.06f),
-				Settings::UI::mainColor.Color().Value.y - (distance * 0.06f),
-				Settings::UI::mainColor.Color().Value.z - (distance * 0.06f),
-				Settings::UI::mainColor.Color().Value.w
-		);
-
 		if (ImGui::Button(tabs[i], ImVec2(ImGui::GetWindowSize().x / IM_ARRAYSIZE(tabs) - 9, 0)))
 			page = i;
-
-		ImGui::GetStyle().Colors[ImGuiCol_Button] = Settings::UI::mainColor.Color();
 
 		if (i < IM_ARRAYSIZE(tabs) - 1)
 			ImGui::SameLine();
@@ -60,7 +51,7 @@ void SkinModelChanger::RenderWindow()
 		return;
 	}
 
-	if (ImGui::Begin(XORSTR("Skin & Model Changer"), &SkinModelChanger::showWindow, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_ShowBorders))
+	if (ImGui::Begin(XORSTR("Skin & Model Changer"), &SkinModelChanger::showWindow, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar))
 	{
 		Settings::UI::Windows::Skinmodel::open = true;
 		ImVec2 temp = ImGui::GetWindowSize();

@@ -56,10 +56,6 @@ void Colors::RenderWindow()
 	};
 
 	ColorListVar colors[] = {
-			{ "UI Main", &Settings::UI::mainColor },
-			{ "UI Body", &Settings::UI::bodyColor },
-			{ "UI Font", &Settings::UI::fontColor },
-			{ "UI Accent", &Settings::UI::accentColor },
 			{ "FOV Circle", &Settings::ESP::FOVCrosshair::color },
 			{ "Spread", &Settings::ESP::Spread::color },
 			{ "SpreadLimit", &Settings::ESP::Spread::spreadLimitColor},
@@ -127,7 +123,7 @@ void Colors::RenderWindow()
 
 	static int colorSelected = 0;
 
-	if (ImGui::Begin("Colors", &Colors::showWindow, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_ShowBorders | ImGuiWindowFlags_NoResize))
+	if (ImGui::Begin("Colors", &Colors::showWindow, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoResize))
 	{
 		Settings::UI::Windows::Colors::open = true;
 		ImVec2 temp = ImGui::GetWindowSize();

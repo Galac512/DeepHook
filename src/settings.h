@@ -280,11 +280,6 @@ namespace Settings
 {
 	namespace UI
 	{
-		extern ColorVar mainColor;
-		extern ColorVar bodyColor;
-		extern ColorVar fontColor;
-		extern ColorVar accentColor;
-
 		namespace Windows
 		{
 			namespace Colors

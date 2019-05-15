@@ -3,7 +3,7 @@
 #include "interfaces.h"
 #include "shortcuts.h"
 #include "ATGUI/atgui.h"
-#include "ATGUI/SegoeUI.h"
+#include "Resources/Bahnschrift.h"
 #include "Hooks/hooks.h"
 #include "ImGUI/fonts/KaiGenGothicCNRegular.h"
 #include "Utils/draw.h"
@@ -17,26 +17,15 @@ void SDL2::SwapWindow(SDL_Window* window)
 
 	static SDL_GLContext original_context = SDL_GL_GetCurrentContext();
 
+	ImGui::CreateContext();
+
 	if (!context)
 	{
 		context = SDL_GL_CreateContext(window);
 		ImGui_ImplSdl_Init(window);
 
-		/*
-		ImWchar RobotoMonoRegular_ranges[] = {
+		ImWchar BahnschriftRegular_ranges[] = {
 				0x0020, 0x007F, // Basic Latin
-				0x00A0, 0x00FF, // Latin-1 Supplement
-				0x0100, 0x017F, // Latin Extended-A
-				0x0180, 0x024F, // Latin Extended-B
-				0x0370, 0x03FF, // Greek and Coptic
-				0x0400, 0x04FF, // Cyrillic
-				0x0500, 0x052F, // Cyrillic Supplementary
-				0
-		};
-		*/
-
-		ImWchar SegoeUI_ranges[] = {
-				0x0020, 0x007E, // Basic Latin
 				0x00A0, 0x00FF, // Latin-1 Supplement
 				0x0100, 0x017F, // Latin Extended-A
 				0x0180, 0x024F, // Latin Extended-B
@@ -58,8 +47,8 @@ void SDL2::SwapWindow(SDL_Window* window)
 		ImGuiIO& io = ImGui::GetIO();
 		ImFontConfig config;
 
-		// Add SegoeUI as default font
-		io.Fonts->AddFontFromMemoryCompressedTTF(SegoeUI_compressed_data, SegoeUI_compressed_size, 18.0f, &config, SegoeUI_ranges);
+		// Add Bahnschrift as default font
+		io.Fonts->AddFontFromMemoryCompressedBase85TTF(Bahnschrift_compressed_data_base85, 18.0f, &config, BahnschriftRegular_ranges);
 
 		// Enable MergeMode and add additional fonts
 		config.MergeMode = true;

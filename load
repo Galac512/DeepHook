@@ -19,13 +19,13 @@ if [ -z "$csgo_pid" ]; then
 fi
 
 if [ ! -d ".git" ]; then
-    echo "We have detected that you have downloaded Fuzion-master.zip from GitHub.com. This is the WRONG way to download! Please download Fuzion by cloning the Git repository: 'git clone --recursive https://github.com/LWSS/Fuzion.git'"
+    echo "Missing .git directory"
 fi
 
 # pBypass for crash dumps being sent
 # You may also want to consider using -nobreakpad in your launch options.
-sudo rm -rf /tmp/dumps # Remove if it exists
-sudo mkdir --mode=000 /tmp/dumps # Make it as root with no permissions
+rm -rf /tmp/dumps # Remove if it exists
+mkdir --mode=000 /tmp/dumps # Make it as root with no permissions
 
 if [ ! -f build_id ]; then
     echo "Build ID not found. Please rebuild using the './build' script."
@@ -36,21 +36,21 @@ filename=$(cat build_id)
 
 # Credit: Aixxe @ aixxe.net
 if grep -q "$filename" /proc/"$csgo_pid"/maps; then
-    echo_orange "Fuzion is already injected, aborting..."
+    echo_orange "DeepHook is already injected, aborting..."
     exit
 fi
 echo "Injecting Build ID: $filename"
 
 # https://www.kernel.org/doc/Documentation/security/Yama.txt
-echo "2" | sudo tee /proc/sys/kernel/yama/ptrace_scope # Only allows root to inject code. This is temporary until reboot.
+echo "2" |  tee /proc/sys/kernel/yama/ptrace_scope # Only allows root to inject code. This is temporary until reboot.
 
-sudo cp "$filename" "/usr/lib/${filename}"
+ cp "$filename" "/usr/lib/${filename}"
 
-sudo killall -19 steam
-sudo killall -19 steamwebhelper
+ killall -19 steam
+ killall -19 steamwebhelper
 
 input="$(
-sudo gdb -n -q -batch-silent \
+ gdb -n -q -batch-silent \
   -ex "set logging on" \
   -ex "set logging file /dev/null" \
   -ex "set logging redirect on" \
@@ -62,10 +62,10 @@ sudo gdb -n -q -batch-silent \
 )"
 
 sleep 1
-sudo killall -18 steamwebhelper
-sudo killall -18 steam
+ killall -18 steamwebhelper
+ killall -18 steam
 
-sudo rm "/usr/lib/${filename}"
+ rm "/usr/lib/${filename}"
 
 last_line="${input##*$'\n'}"
 
