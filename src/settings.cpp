@@ -179,6 +179,11 @@ void Settings::LoadDefaultsOrSave(std::string path)
 		weaponSetting[XORSTR("Smooth")][XORSTR("Salting")][XORSTR("Multiplier")] = i.second.smoothSaltMultiplier;
 		weaponSetting[XORSTR("ErrorMargin")][XORSTR("Enabled")] = i.second.errorMarginEnabled;
 		weaponSetting[XORSTR("ErrorMargin")][XORSTR("Value")] = i.second.errorMarginValue;
+		weaponSetting[XORSTR("Curve")][XORSTR("Enabled")] = i.second.curveEnabled;
+		weaponSetting[XORSTR("Curve")][XORSTR("Value")][0] = i.second.curveValue[0];
+		weaponSetting[XORSTR("Curve")][XORSTR("Value")][1] = i.second.curveValue[1];
+		weaponSetting[XORSTR("Curve")][XORSTR("Value")][2] = i.second.curveValue[2];
+		weaponSetting[XORSTR("Curve")][XORSTR("Value")][3] = i.second.curveValue[3];
 		weaponSetting[XORSTR("AutoAim")][XORSTR("Enabled")] = i.second.autoAimEnabled;
 		weaponSetting[XORSTR("AutoAim")][XORSTR("FOV")] = i.second.autoAimFov;
 		weaponSetting[XORSTR("AimStep")][XORSTR("Enabled")] = i.second.aimStepEnabled;
@@ -624,6 +629,7 @@ void Settings::LoadConfig(std::string path)
 				.smoothEnabled = weaponSetting[XORSTR( "Smooth" )][XORSTR( "Enabled" )].asBool(),
 				.smoothSaltEnabled = weaponSetting[XORSTR( "Smooth" )][XORSTR( "Salting" )][XORSTR( "Enabled" )].asBool(),
 				.errorMarginEnabled = weaponSetting[XORSTR( "ErrorMargin" )][XORSTR( "Enabled" )].asBool(),
+				.curveEnabled = weaponSetting[XORSTR( "Curve" )][XORSTR( "Enabled" )].asBool(),
 				.autoAimEnabled = weaponSetting[XORSTR( "AutoAim" )][XORSTR( "Enabled" )].asBool(),
 				.aimStepEnabled = weaponSetting[XORSTR( "AimStep" )][XORSTR( "Enabled" )].asBool(),
 				.rcsEnabled = weaponSetting[XORSTR( "RCS" )][XORSTR( "Enabled" )].asBool(),
@@ -661,6 +667,11 @@ void Settings::LoadConfig(std::string path)
 				.spreadLimit = weaponSetting[XORSTR( "SpreadLimit" )][XORSTR( "Value" )].asFloat(),
 		};
 
+		weapon.curveValue[0] = weaponSetting[XORSTR( "Curve" )][XORSTR( "Value" )][0].asFloat();
+		weapon.curveValue[1] = weaponSetting[XORSTR( "Curve" )][XORSTR( "Value" )][1].asFloat();
+		weapon.curveValue[2] = weaponSetting[XORSTR( "Curve" )][XORSTR( "Value" )][2].asFloat();
+		weapon.curveValue[3] = weaponSetting[XORSTR( "Curve" )][XORSTR( "Value" )][3].asFloat();
+		
 		for (int bone = (int) DesiredBones::BONE_PELVIS; bone <= (int) DesiredBones::BONE_RIGHT_SOLE; bone++)
 			weapon.desiredBones[bone] = weaponSetting[XORSTR("DesiredBones")][XORSTR("Bones")][bone].asBool();
 		Settings::Aimbot::weapons.at(weaponID) = weapon;

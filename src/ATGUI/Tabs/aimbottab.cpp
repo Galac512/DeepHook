@@ -5,6 +5,7 @@
 #include "../../Utils/xorstring.h"
 #include "../../ImGUI/imgui_internal.h"
 #include "../atgui.h"
+#include "../bezier.h"
 
 static ItemDefinitionIndex currentWeapon = ItemDefinitionIndex::INVALID;
 static bool enabled = false;
@@ -30,6 +31,8 @@ static bool smoothSaltEnabled = false;
 static float smoothSaltMultiplier = 0.0f;
 static bool errorMarginEnabled = false;
 static float errorMarginValue = 0.0f;
+static bool curveEnabled = false;
+static float curveValue[5] = { 0.390f, 0.575f, 0.565f, 0.900f };
 static bool autoAimEnabled = false;
 static float autoAimValue = 180.0f;
 static bool aimStepEnabled = false;
@@ -81,6 +84,7 @@ void UI::ReloadWeaponSettings()
         smoothSaltMultiplier = Settings::Aimbot::weapons.at(index).smoothSaltMultiplier;
         errorMarginEnabled = Settings::Aimbot::weapons.at(index).errorMarginEnabled;
         errorMarginValue = Settings::Aimbot::weapons.at(index).errorMarginValue;
+	curveEnabled = Settings::Aimbot::weapons.at(index).curveEnabled;
         autoAimEnabled = Settings::Aimbot::weapons.at(index).autoAimEnabled;
         autoAimValue = Settings::Aimbot::weapons.at(index).autoAimFov;
         aimStepEnabled = Settings::Aimbot::weapons.at(index).aimStepEnabled;
@@ -109,6 +113,10 @@ void UI::ReloadWeaponSettings()
         autoSlow = Settings::Aimbot::weapons.at(index).autoSlow;
         predEnabled = Settings::Aimbot::weapons.at(index).predEnabled;
 
+	curveValue[0] = Settings::Aimbot::weapons.at(index).curveValue[0];
+	curveValue[1] = Settings::Aimbot::weapons.at(index).curveValue[1];
+	curveValue[2] = Settings::Aimbot::weapons.at(index).curveValue[2];
+	curveValue[3] = Settings::Aimbot::weapons.at(index).curveValue[3];
         for (int bone = (int) DesiredBones::BONE_PELVIS; bone <= (int) DesiredBones::BONE_RIGHT_SOLE; bone++)
                 desiredBones[bone] = Settings::Aimbot::weapons.at(index).desiredBones[bone];
 }
@@ -129,6 +137,7 @@ void UI::UpdateWeaponSettings()
                 .smoothEnabled = smoothEnabled,
                 .smoothSaltEnabled = smoothSaltEnabled,
                 .errorMarginEnabled = errorMarginEnabled,
+		.curveEnabled = curveEnabled,
                 .autoAimEnabled = autoAimEnabled,
                 .aimStepEnabled = aimStepEnabled,
                 .rcsEnabled = rcsEnabled,
@@ -165,6 +174,11 @@ void UI::UpdateWeaponSettings()
                 .autoWallValue = autoWallValue,
                 .spreadLimit = spreadLimit,
         };
+
+	settings.curveValue[0] = curveValue[0];
+	settings.curveValue[1] = curveValue[1];
+	settings.curveValue[2] = curveValue[2];
+	settings.curveValue[3] = curveValue[3];
 
         for (int bone = (int) DesiredBones::BONE_PELVIS; bone <= (int) DesiredBones::BONE_RIGHT_SOLE; bone++)
                 settings.desiredBones[bone] = desiredBones[bone];
@@ -367,7 +381,7 @@ void Aimbot::RenderTab()
                         }
                         ImGui::Columns(1);
                         ImGui::Separator();
-                        ImGui::Text(XORSTR("Recoil Cntrol"));
+                        ImGui::Text(XORSTR("Recoil Control"));
                         ImGui::Separator();
                         ImGui::Columns(2, nullptr, false);
                         {
@@ -427,17 +441,14 @@ void Aimbot::RenderTab()
                                         UI::UpdateWeaponSettings();
                                 ImGui::PopItemWidth();
                         }
-                        ImGui::Columns(1);
-                        ImGui::Separator();
-                        ImGui::Text(XORSTR("Autoshoot"));
-                        ImGui::Separator();
-                        if (ImGui::Checkbox(XORSTR("Auto Shoot"), &autoShootEnabled))
-                                UI::UpdateWeaponSettings();
-                        ImGui::Checkbox(XORSTR("Velocity Check"), &Settings::Aimbot::AutoShoot::velocityCheck);
-                        if( ImGui::Checkbox(XORSTR("Spread Limit"), &spreadLimitEnabled) )
-                                UI::UpdateWeaponSettings();
-                        if( ImGui::SliderFloat(XORSTR("##SPREADLIMIT"), &spreadLimit, 0, 0.1) )
-                                UI::UpdateWeaponSettings();
+			ImGui::EndColumns();
+			{
+				if (ImGui::Checkbox(XORSTR("Enabled##CURVE"), &curveEnabled))
+                                        UI::UpdateWeaponSettings();
+				if (ImGui::Bezier( XORSTR("Curve"), curveValue, false, false ))
+                                        UI::UpdateWeaponSettings();
+			}
+			
                         ImGui::EndChild();
                 }
         }
@@ -632,11 +643,22 @@ void Aimbot::RenderTab()
                                 ImGui::PopItemWidth();
                         }
 
-
                         ImGui::Columns(1);
                         ImGui::Separator();
+                        ImGui::Text(XORSTR("Autoshoot"));
+                        ImGui::Separator();
+                        if (ImGui::Checkbox(XORSTR("Auto Shoot"), &autoShootEnabled))
+                                UI::UpdateWeaponSettings();
+                        ImGui::Checkbox(XORSTR("Velocity Check"), &Settings::Aimbot::AutoShoot::velocityCheck);
+                        if( ImGui::Checkbox(XORSTR("Spread Limit"), &spreadLimitEnabled) )
+                                UI::UpdateWeaponSettings();
+                        if( ImGui::SliderFloat(XORSTR("##SPREADLIMIT"), &spreadLimit, 0, 0.1) )
+                                UI::UpdateWeaponSettings();
+
+                        ImGui::Columns(1);
                         if (currentWeapon > ItemDefinitionIndex::INVALID && Settings::Aimbot::weapons.find(currentWeapon) != Settings::Aimbot::weapons.end())
                         {
+				ImGui::Separator();
                                 if (ImGui::Button(XORSTR("Clear Weapon Settings"), ImVec2(-1, 0)))
                                 {
                                         Settings::Aimbot::weapons.erase(currentWeapon);

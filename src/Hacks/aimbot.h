@@ -7,12 +7,12 @@
 
 namespace Aimbot
 {
-	extern bool aimStepInProgress;
-	extern std::vector<int64_t> friends;
-    extern int targetAimbot;
+        extern bool aimStepInProgress;
+        extern std::vector<int64_t> friends;
+        extern int targetAimbot;
 
-	//Hooks
-	void CreateMove(CUserCmd* cmd);
-	void FireGameEvent(IGameEvent* event);
-	void UpdateValues();
+        //Hooks
+        void CreateMove(CUserCmd* cmd);
+        void FireGameEvent(IGameEvent* event);
+        void UpdateValues();
 }
