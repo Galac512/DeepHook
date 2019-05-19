@@ -6,8 +6,8 @@
 
 HFont esp_font = 0;
 
-char* Settings::UI::Fonts::ESP::family = (char *) "Segoe UI";
-int Settings::UI::Fonts::ESP::size = 12;
+char* Settings::UI::Fonts::ESP::family = (char *) "Bahnschrift";
+int Settings::UI::Fonts::ESP::size = 18;
 int Settings::UI::Fonts::ESP::flags = (int) FontFlags::FONTFLAG_OUTLINE;
 
 static HFont CreateFont( const char* fontName, int size, int flag ) {

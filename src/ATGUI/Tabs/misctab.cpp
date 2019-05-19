@@ -58,6 +58,7 @@ void Misc::RenderTab()
                                         ImGui::SliderInt(XORSTR("##BHOPMIN"), &Settings::BHop::Hops::Min, 0, 20);
                                         ImGui::SliderInt(XORSTR("##BHOPMAX"), &Settings::BHop::Hops::Max, 0, 20);
                                 }
+				ImGui::EndColumns();
                                 ImGui::Separator();
                         }
 
