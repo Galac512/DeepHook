@@ -69,14 +69,15 @@ void Misc::RenderTab()
                         ImGui::NextColumn();
                         {
                                 ImGui::PushItemWidth(-1);
+				ImGui::PushItemWidth(Settings::AutoStrafe::type == AutostrafeType::AS_RAGE ? ImGui::CalcItemWidth() : -1);
                                 ImGui::Combo(XORSTR("##STRAFETYPE"), (int*)& Settings::AutoStrafe::type, strafeTypes, IM_ARRAYSIZE(strafeTypes));
+				if (Settings::AutoStrafe::type == AutostrafeType::AS_RAGE)
+				{
+					ImGui::SameLine();
+					ImGui::Checkbox(XORSTR("Silent"), &Settings::AutoStrafe::silent);
+				}
                                 ImGui::PopItemWidth();
                                 UI::KeyBindButton(&Settings::EdgeJump::key);
-                        }
-
-                        if (Settings::AutoStrafe::type == AutostrafeType::AS_RAGE)
-                        {
-                                ImGui::Checkbox(XORSTR("Silent"), &Settings::AutoStrafe::silent);
                         }
 
                         ImGui::Columns(1);
@@ -449,6 +450,7 @@ void Misc::RenderTab()
                                 UI::KeyBindButton(&Settings::Autoblock::key);
                                 UI::KeyBindButton(&Settings::JumpThrow::key);
                                 ImGui::Checkbox(XORSTR("Silent Defuse"), &Settings::AutoDefuse::silent);
+                                ImGui::Checkbox(XORSTR("Watermark"), &Settings::Watermark::enabled);
                         }
                         ImGui::Columns(1);
                         ImGui::Separator();

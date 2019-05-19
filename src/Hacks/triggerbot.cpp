@@ -82,7 +82,7 @@ void Triggerbot::CreateMove(CUserCmd *cmd)
 	if (!inputSystem->IsButtonDown(Settings::Triggerbot::key))
 		return;
 
-	if (Settings::Triggerbot::Filters::flashCheck && localplayer->GetFlashBangTime() - globalVars->curtime > 2.0f)
+	if (Settings::Triggerbot::Filters::flashCheck && localplayer->IsFlashed() )
 		return;
 
 	static int localMin = Settings::Triggerbot::RandomDelay::lowBound;

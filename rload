@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-bash -c \
-"./uload
-./build
-./load"
+[ "${USERNAME}" != "root" ] && echo "You need to be root" && exit
+
+./uload && ./build && ./load

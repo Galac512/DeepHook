@@ -51,6 +51,7 @@ static bool autoShootEnabled = false;
 static bool autoScopeEnabled = false;
 static bool noShootEnabled = false;
 static bool ignoreJumpEnabled = false;
+static bool ignoreEnemyJumpEnabled = false;
 static bool smokeCheck = false;
 static bool flashCheck = false;
 static bool spreadLimitEnabled = false;
@@ -103,6 +104,7 @@ void UI::ReloadWeaponSettings()
         autoScopeEnabled = Settings::Aimbot::weapons.at(index).autoScopeEnabled;
         noShootEnabled = Settings::Aimbot::weapons.at(index).noShootEnabled;
         ignoreJumpEnabled = Settings::Aimbot::weapons.at(index).ignoreJumpEnabled;
+	ignoreEnemyJumpEnabled = Settings::Aimbot::weapons.at(index).ignoreEnemyJumpEnabled;
         smokeCheck = Settings::Aimbot::weapons.at(index).smokeCheck;
         flashCheck = Settings::Aimbot::weapons.at(index).flashCheck;
         spreadLimitEnabled = Settings::Aimbot::weapons.at(index).spreadLimitEnabled;
@@ -148,6 +150,8 @@ void UI::UpdateWeaponSettings()
                 .autoScopeEnabled = autoScopeEnabled,
                 .noShootEnabled = noShootEnabled,
                 .ignoreJumpEnabled = ignoreJumpEnabled,
+		.ignoreEnemyJumpEnabled = ignoreEnemyJumpEnabled,
+
                 .smokeCheck = smokeCheck,
                 .flashCheck = flashCheck,
                 .autoWallEnabled = autoWallEnabled,
@@ -253,7 +257,7 @@ void Aimbot::RenderTab()
                                 ImGui::PushItemWidth(-1);
                                 ImGui::Text(XORSTR("Aimbot Target"));
                                 if(!closestBone){
-                                        if (ImGui::Combo(XORSTR("##AIMTARGET"), (int*)& bone, targets, IM_ARRAYSIZE(targets)))
+                                        if (ImGui::Combo(XORSTR("##AIMTARGET"), (int*)&bone, targets, IM_ARRAYSIZE(targets)))
                                                 UI::UpdateWeaponSettings();
                                 }
                                 if( closestBone )
@@ -521,17 +525,35 @@ void Aimbot::RenderTab()
                                 if (ImGui::Checkbox(XORSTR("Prediction"), &predEnabled))
                                         UI::UpdateWeaponSettings();
                         }
-                        ImGui::NextColumn();
-                        {
-                                if (ImGui::Checkbox(XORSTR("No Shoot"), &noShootEnabled))
-                                        UI::UpdateWeaponSettings();
-                                if (ImGui::Checkbox(XORSTR("Auto Scope"), &autoScopeEnabled))
-                                        UI::UpdateWeaponSettings();
-                                if (ImGui::Checkbox(XORSTR("Ignore Jump"), &ignoreJumpEnabled))
-                                        UI::UpdateWeaponSettings();
-                                if (ImGui::Checkbox(XORSTR("Flash Check"), &flashCheck))
-                                        UI::UpdateWeaponSettings();
-                        }
+			ImGui::NextColumn();
+			{
+				if (ImGui::Checkbox(XORSTR("No Shoot"), &noShootEnabled))
+					UI::UpdateWeaponSettings();
+				switch (currentWeapon)
+				{
+					case ItemDefinitionIndex::WEAPON_DEAGLE:
+					case ItemDefinitionIndex::WEAPON_ELITE:
+					case ItemDefinitionIndex::WEAPON_FIVESEVEN:
+					case ItemDefinitionIndex::WEAPON_GLOCK:
+					case ItemDefinitionIndex::WEAPON_TEC9:
+					case ItemDefinitionIndex::WEAPON_HKP2000:
+					case ItemDefinitionIndex::WEAPON_USP_SILENCER:
+					case ItemDefinitionIndex::WEAPON_P250:
+					case ItemDefinitionIndex::WEAPON_CZ75A:
+					case ItemDefinitionIndex::WEAPON_REVOLVER:
+						break;
+					default:
+						if (ImGui::Checkbox(XORSTR("Auto Scope"), &autoScopeEnabled))
+							UI::UpdateWeaponSettings();
+				}
+
+				if (ImGui::Checkbox(XORSTR("Flash Check"), &flashCheck))
+					UI::UpdateWeaponSettings();
+				if (ImGui::Checkbox(XORSTR("Ignore Jump (Self)"), &ignoreJumpEnabled))
+					UI::UpdateWeaponSettings();
+				if (ImGui::Checkbox(XORSTR("Ignore Jump (Enemies)"), &ignoreEnemyJumpEnabled))
+					UI::UpdateWeaponSettings();
+			}
 
 
                         ImGui::Columns(1);

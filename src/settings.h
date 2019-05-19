@@ -77,7 +77,6 @@ enum class BarType : int
         VERTICAL_RIGHT,
         HORIZONTAL,
         HORIZONTAL_UP,
-        INTERWEBZ,
 };
 
 enum class BarColorType : int
@@ -159,6 +158,7 @@ struct AimbotWeapon_t
                 autoScopeEnabled,
                 noShootEnabled,
                 ignoreJumpEnabled,
+		ignoreEnemyJumpEnabled,
                 smokeCheck,
                 flashCheck,
                 autoWallEnabled,
@@ -233,8 +233,7 @@ struct AimbotWeapon_t
                     this->autoShootEnabled == another.autoShootEnabled &&
                     this->autoScopeEnabled == another.autoScopeEnabled &&
                     this->noShootEnabled == another.noShootEnabled &&
-                    this->ignoreJumpEnabled == another.ignoreJumpEnabled &&
-                    this->smokeCheck == another.smokeCheck &&
+		    this->ignoreEnemyJumpEnabled == another.ignoreEnemyJumpEnabled &&                    this->smokeCheck == another.smokeCheck &&
                     this->flashCheck == another.flashCheck &&
                     this->spreadLimitEnabled == another.spreadLimitEnabled &&
                     this->spreadLimit == another.spreadLimit &&
@@ -465,6 +464,11 @@ namespace Settings
                 {
                         extern bool enabled;
                 }
+
+		namespace IgnoreEnemyJump
+		{
+			extern bool enabled;
+		}
 
                 namespace SmokeCheck
                 {
@@ -981,6 +985,11 @@ namespace Settings
         {
                 extern bool enabled;
                 extern bool silent;
+        }
+
+        namespace Watermark
+        {
+                extern bool enabled;
         }
 
         namespace NoSmoke

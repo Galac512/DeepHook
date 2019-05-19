@@ -535,8 +535,10 @@ static void DrawBox( ImColor color, int x, int y, int w, int h, C_BaseEntity* en
         }
 }
 
-static void DrawSprite( int x, int y, int w, int h, C_BaseEntity* entity ){
-        if ( Settings::ESP::Sprite::type == SpriteType::SPRITE_TUX ) {
+static void DrawSprite( int x, int y, int w, int h, C_BaseEntity* entity )
+{
+        if ( Settings::ESP::Sprite::type == SpriteType::SPRITE_TUX )
+	{
                 static Texture sprite(tux_rgba, tux_width, tux_height);
 
                 sprite.Draw(x, y, ((float)h/tux_height)*tux_width, h);
@@ -544,7 +546,8 @@ static void DrawSprite( int x, int y, int w, int h, C_BaseEntity* entity ){
         // TODO: Handle other sprites
 }
 
-static void DrawEntity( C_BaseEntity* entity, const char* string, ImColor color ) {
+static void DrawEntity( C_BaseEntity* entity, const char* string, ImColor color )
+{
         int x, y, w, h;
         if ( !GetBox( entity, x, y, w, h ) )
                 return;
@@ -553,7 +556,9 @@ static void DrawEntity( C_BaseEntity* entity, const char* string, ImColor color 
         Vector2D nameSize = Draw::GetTextSize( string, esp_font );
         Draw::AddText(( int ) ( x + ( w / 2 ) - ( nameSize.x / 2 ) ), y + h + 2, string, color );
 }
-static void DrawSkeleton( C_BasePlayer* player ) {
+
+static void DrawSkeleton( C_BasePlayer* player )
+{
         studiohdr_t* pStudioModel = modelInfo->GetStudioModel( player->GetModel() );
         if ( !pStudioModel )
                 return;
@@ -910,8 +915,7 @@ static void DrawPlayerText( C_BasePlayer* player, int x, int y, int w, int h ) {
         C_BaseCombatWeapon* activeWeapon = ( C_BaseCombatWeapon* ) entityList->GetClientEntityFromHandle( player->GetActiveWeapon() );
         if ( Settings::ESP::Info::weapon && activeWeapon ) {
                 std::string modelName = Util::Items::GetItemDisplayName( *activeWeapon->GetItemDefinitionIndex() );
-                int offset = ( int ) ( Settings::ESP::Bars::type == BarType::HORIZONTAL ||
-                    Settings::ESP::Bars::type == BarType::INTERWEBZ ? boxSpacing + barsSpacing.y + 1 : 0 );
+                int offset = ( int ) ( Settings::ESP::Bars::type == BarType::HORIZONTAL );
 
                 Vector2D weaponTextSize = Draw::GetTextSize( modelName.c_str(), esp_font );
                 Draw::AddText( ( x + ( w / 2 ) - ( weaponTextSize.x / 2 ) ), y + h + offset, modelName.c_str(), ImColor( 255, 255, 255, 255 ) );
@@ -925,7 +929,7 @@ static void DrawPlayerText( C_BasePlayer* player, int x, int y, int w, int h ) {
         if ( Settings::ESP::Info::reloading && activeWeapon && activeWeapon->GetInReload() )
                 stringsToShow.push_back( XORSTR( "Reloading" ) );
         /***************************/
-        if ( Settings::ESP::Info::flashed && player->GetFlashBangTime() - globalVars->curtime > 2.0f )
+        if ( Settings::ESP::Info::flashed && player->IsFlashed() )
                 stringsToShow.push_back( XORSTR( "Flashed" ) );
         if ( Settings::ESP::Info::planting && Entity::IsPlanting( player ) )
                 stringsToShow.push_back( XORSTR( "Planting" ) );
@@ -949,7 +953,8 @@ static void DrawPlayerText( C_BasePlayer* player, int x, int y, int w, int h ) {
         }
 
 
-        for( unsigned int i = 0; i < stringsToShow.size(); i++ ){
+        for( unsigned int i = 0; i < stringsToShow.size(); i++ )
+	{
                 Draw::AddText( x + w + boxSpacing, ( y + ( i * ( textSize.y + 2 ) ) ), stringsToShow[i].c_str(), ImColor( 255, 255, 255, 255 ) );
         }
 }
@@ -1164,132 +1169,136 @@ static void DrawThrowable(C_BaseEntity* throwable, ClientClass* client)
 
 static void DrawGlow()
 {
-        C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
-        if (!localplayer)
-                return;
-
-        for (int i = 0; i < glowManager->m_GlowObjectDefinitions.Count(); i++)
-        {
-                GlowObjectDefinition_t& glow_object = glowManager->m_GlowObjectDefinitions[i];
-
-                if (glow_object.IsUnused() || !glow_object.m_pEntity)
-                        continue;
-
-                ImColor color;
-                ClientClass* client = glow_object.m_pEntity->GetClientClass();
-                bool shouldGlow = true;
-
-                if (client->m_ClassID == EClassIds::CCSPlayer)
-                {
-                        C_BasePlayer* player = (C_BasePlayer*) glow_object.m_pEntity;
-
-                        if (player->GetDormant() || !player->GetAlive())
-                                continue;
-
-                        if (player == localplayer)
-                        {
-                                color = Settings::ESP::Glow::localplayerColor.Color(player);
-                        }
-                        else
-                        {
-                                if (!Entity::IsTeamMate(player, localplayer))
-                                {
-                                        if (Entity::IsVisible(player, (int)Bone::BONE_HEAD))
-                                                color = Settings::ESP::Glow::enemyVisibleColor.Color(player);
-                                        else
-                                                color = Settings::ESP::Glow::enemyColor.Color(player);
-                                }
-                                else
-                                        color = Settings::ESP::Glow::allyColor.Color(player);
-                        }
-                }
-                else if (client->m_ClassID != EClassIds::CBaseWeaponWorldModel &&
-                    (strstr(client->m_pNetworkName, XORSTR("Weapon")) || client->m_ClassID == EClassIds::CDEagle || client->m_ClassID == EClassIds::CAK47))
-                {
-                        color = Settings::ESP::Glow::weaponColor.Color();
-                }
-                else if (client->m_ClassID == EClassIds::CBaseCSGrenadeProjectile || client->m_ClassID == EClassIds::CDecoyProjectile ||
-                    client->m_ClassID == EClassIds::CMolotovProjectile || client->m_ClassID == EClassIds::CSmokeGrenadeProjectile)
-                {
-                        color = Settings::ESP::Glow::grenadeColor.Color();
-                }
-                else if (client->m_ClassID == EClassIds::CBaseAnimating)
-                {
-                        color = Settings::ESP::Glow::defuserColor.Color();
-
-                        if (localplayer->HasDefuser() || localplayer->GetTeam() == TeamID::TEAM_TERRORIST)
-                                shouldGlow = false;
-                }
-                else if (client->m_ClassID == EClassIds::CChicken)
-                {
-                        color = Settings::ESP::Glow::chickenColor.Color();
-
-                        *reinterpret_cast<C_Chicken*>(glow_object.m_pEntity)->GetShouldGlow() = shouldGlow;
-                }
-
-                shouldGlow = shouldGlow && color.Value.w > 0;
-
-                glow_object.m_flGlowColor[0] = color.Value.x;
-                glow_object.m_flGlowColor[1] = color.Value.y;
-                glow_object.m_flGlowColor[2] = color.Value.z;
-                glow_object.m_flGlowAlpha = shouldGlow ? color.Value.w : 1.0f;
-                glow_object.m_flBloomAmount = 1.0f;
-                glow_object.m_bRenderWhenOccluded = shouldGlow;
-                glow_object.m_bRenderWhenUnoccluded = false;
-        }
+	C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
+	if (!localplayer)
+		return;
+	
+	for (int i = 0; i < glowManager->m_GlowObjectDefinitions.Count(); i++)
+	{
+		GlowObjectDefinition_t& glow_object = glowManager->m_GlowObjectDefinitions[i];
+		
+		if (glow_object.IsUnused() || !glow_object.m_pEntity)
+			continue;
+		
+		ImColor color;
+		ClientClass* client = glow_object.m_pEntity->GetClientClass();
+		bool shouldGlow = true;
+		
+		if (client->m_ClassID == EClassIds::CCSPlayer)
+		{
+			C_BasePlayer* player = (C_BasePlayer*) glow_object.m_pEntity;
+			
+			if (player->GetDormant() || !player->GetAlive())
+				continue;
+			
+			if (player == localplayer)
+			{
+				color = Settings::ESP::Glow::localplayerColor.Color(player);
+			}
+			else
+			{
+				if (!Entity::IsTeamMate(player, localplayer))
+				{
+					if (Entity::IsVisible(player, (int)Bone::BONE_HEAD))
+						color = Settings::ESP::Glow::enemyVisibleColor.Color(player);
+					else
+						color = Settings::ESP::Glow::enemyColor.Color(player);
+				}
+				else
+					color = Settings::ESP::Glow::allyColor.Color(player);
+			}
+		}
+		else if (client->m_ClassID != EClassIds::CBaseWeaponWorldModel &&
+		    (strstr(client->m_pNetworkName, XORSTR("Weapon")) || client->m_ClassID == EClassIds::CDEagle || client->m_ClassID == EClassIds::CAK47))
+		{
+			color = Settings::ESP::Glow::weaponColor.Color();
+		}
+		else if (client->m_ClassID == EClassIds::CBaseCSGrenadeProjectile || client->m_ClassID == EClassIds::CDecoyProjectile ||
+		    client->m_ClassID == EClassIds::CMolotovProjectile || client->m_ClassID == EClassIds::CSmokeGrenadeProjectile)
+		{
+			color = Settings::ESP::Glow::grenadeColor.Color();
+		}
+		else if (client->m_ClassID == EClassIds::CBaseAnimating)
+		{
+			color = Settings::ESP::Glow::defuserColor.Color();
+			
+			if (localplayer->HasDefuser() || localplayer->GetTeam() == TeamID::TEAM_TERRORIST)
+				shouldGlow = false;
+		}
+		else if (client->m_ClassID == EClassIds::CChicken)
+		{
+			color = Settings::ESP::Glow::chickenColor.Color();
+			
+			*reinterpret_cast<C_Chicken*>(glow_object.m_pEntity)->GetShouldGlow() = shouldGlow;
+		}
+		
+		shouldGlow = shouldGlow && color.Value.w > 0;
+		
+		glow_object.m_flGlowColor[0] = color.Value.x;
+		glow_object.m_flGlowColor[1] = color.Value.y;
+		glow_object.m_flGlowColor[2] = color.Value.z;
+		glow_object.m_flGlowAlpha = shouldGlow ? color.Value.w : 1.0f;
+		glow_object.m_flBloomAmount = 1.0f;
+		glow_object.m_bRenderWhenOccluded = shouldGlow;
+		glow_object.m_bRenderWhenUnoccluded = false;
+	}
 }
 
 static void DrawFOVCrosshair()
 {
-        if ( !Settings::ESP::FOVCrosshair::enabled )
-                return;
+	if ( !Settings::ESP::FOVCrosshair::enabled )
+		return;
 
-        C_BasePlayer* localplayer = ( C_BasePlayer* ) entityList->GetClientEntity( engine->GetLocalPlayer() );
-        if ( !localplayer->GetAlive() )
-                return;
+	C_BasePlayer* localplayer = ( C_BasePlayer* ) entityList->GetClientEntity( engine->GetLocalPlayer() );
+	if ( !localplayer->GetAlive() )
+		return;
 
-        if( Settings::Aimbot::AutoAim::fov > OverrideView::currentFOV )
-                return;
+	if( Settings::Aimbot::AutoAim::fov > OverrideView::currentFOV )
+		return;
 
-        int width, height;
-        engine->GetScreenSize( width, height );
+	int width, height;
+	engine->GetScreenSize( width, height );
 
-        float radius;
-        if ( Settings::Aimbot::AutoAim::realDistance ) {
-                Vector src3D, dst3D, forward;
-                trace_t tr;
-                Ray_t ray;
-                CTraceFilter filter;
+	float radius;
+	if ( Settings::Aimbot::AutoAim::realDistance )
+	{
+		Vector src3D, dst3D, forward;
+		trace_t tr;
+		Ray_t ray;
+		CTraceFilter filter;
 
-                QAngle angles = viewanglesBackup;
-                Math::AngleVectors( angles, forward );
-                filter.pSkip = localplayer;
-                src3D = localplayer->GetEyePosition();
-                dst3D = src3D + ( forward * 8192 );
+		QAngle angles = viewanglesBackup;
+		Math::AngleVectors( angles, forward );
+		filter.pSkip = localplayer;
+		src3D = localplayer->GetEyePosition();
+		dst3D = src3D + ( forward * 8192 );
 
-                ray.Init( src3D, dst3D );
-                trace->TraceRay( ray, MASK_SHOT, &filter, &tr );
+		ray.Init( src3D, dst3D );
+		trace->TraceRay( ray, MASK_SHOT, &filter, &tr );
 
-                QAngle leftViewAngles = QAngle( angles.x, angles.y - 90.f, 0.f );
-                Math::NormalizeAngles( leftViewAngles );
-                Math::AngleVectors( leftViewAngles, forward );
-                forward *= Settings::Aimbot::AutoAim::fov * 5.f;
+		QAngle leftViewAngles = QAngle( angles.x, angles.y - 90.f, 0.f );
+		Math::NormalizeAngles( leftViewAngles );
+		Math::AngleVectors( leftViewAngles, forward );
+		forward *= Settings::Aimbot::AutoAim::fov * 5.f;
 
-                Vector maxAimAt = tr.endpos + forward;
+		Vector maxAimAt = tr.endpos + forward;
 
-                Vector max2D;
-                if ( debugOverlay->ScreenPosition( maxAimAt, max2D ) )
-                        return;
+		Vector max2D;
+		if ( debugOverlay->ScreenPosition( maxAimAt, max2D ) )
+			return;
 
-                radius = fabsf( width / 2 - max2D.x );
-        } else {
-                radius = ( ( Settings::Aimbot::AutoAim::fov / OverrideView::currentFOV ) * width ) / 2;
-        }
+		radius = fabsf( width / 2 - max2D.x );
+	}
+	else
+	{
+		radius = ( ( Settings::Aimbot::AutoAim::fov / OverrideView::currentFOV ) * width ) / 2;
+		radius = std::min(radius, (((180.f / OverrideView::currentFOV) * width) / 2)); // prevents a big radius 
+	}
 
-        if ( Settings::ESP::FOVCrosshair::filled )
-                Draw::AddCircleFilled( width / 2, height / 2 , radius, Settings::ESP::FOVCrosshair::color.Color(), std::max(12, (int)radius*2) );
-        else
-                Draw::AddCircle( width / 2, height / 2, radius, Settings::ESP::FOVCrosshair::color.Color(), std::max(12, (int)radius*2) );
+	if ( Settings::ESP::FOVCrosshair::filled )
+		Draw::AddCircleFilled( width / 2, height / 2 , radius, Settings::ESP::FOVCrosshair::color.Color(), std::max(12, (int)radius*2) );
+	else
+		Draw::AddCircle( width / 2, height / 2, radius, Settings::ESP::FOVCrosshair::color.Color(), std::max(12, (int)radius*2) );
 }
 
 static void DrawSpread()

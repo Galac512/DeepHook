@@ -12,6 +12,7 @@
 #include "../Hacks/hitmarkers.h"
 #include "../Hacks/snipercrosshair.h"
 #include "../Hacks/angleindicator.h"
+#include "../Hacks/watermark.h"
 
 #include <mutex>
 
@@ -42,6 +43,7 @@ void Hooks::Paint(void* thisptr, PaintMode_t mode)
         Hitmarkers::Paint();
         SniperCrosshair::Paint();
         AngleIndicator::Paint();
+	Watermark::Paint();
 
         if( Settings::ESP::backend == DrawingBackend::SURFACE ){
             StartDrawing(surface);

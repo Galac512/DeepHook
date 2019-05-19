@@ -202,6 +202,7 @@ void Settings::LoadDefaultsOrSave(std::string path)
 		weaponSetting[XORSTR("AutoScope")][XORSTR("Enabled")] = i.second.autoScopeEnabled;
 		weaponSetting[XORSTR("NoShoot")][XORSTR("Enabled")] = i.second.noShootEnabled;
 		weaponSetting[XORSTR("IgnoreJump")][XORSTR("Enabled")] = i.second.ignoreJumpEnabled;
+		weaponSetting[XORSTR("IgnoreEnemyJump")][XORSTR("Enabled")] = i.second.ignoreEnemyJumpEnabled;
 		weaponSetting[XORSTR("SmokeCheck")][XORSTR("Enabled")] = i.second.smokeCheck;
 		weaponSetting[XORSTR("FlashCheck")][XORSTR("Enabled")] = i.second.flashCheck;
 		weaponSetting[XORSTR("SpreadLimit")][XORSTR("Enabled")] = i.second.spreadLimitEnabled;
@@ -536,6 +537,8 @@ void Settings::LoadDefaultsOrSave(std::string path)
 	settings[XORSTR("AutoDefuse")][XORSTR("enabled")] = Settings::AutoDefuse::enabled;
 	settings[XORSTR("AutoDefuse")][XORSTR("silent")] = Settings::AutoDefuse::silent;
 
+	settings[XORSTR("Watermark")][XORSTR("enabled")] = Settings::Watermark::enabled;
+
 	settings[XORSTR("NoSmoke")][XORSTR("enabled")] = Settings::NoSmoke::enabled;
 
 	settings[XORSTR("ScreenshotCleaner")][XORSTR("enabled")] = Settings::ScreenshotCleaner::enabled;
@@ -639,8 +642,7 @@ void Settings::LoadConfig(std::string path)
 				.autoShootEnabled = weaponSetting[XORSTR( "AutoShoot" )][XORSTR( "Enabled" )].asBool(),
 				.autoScopeEnabled = weaponSetting[XORSTR( "AutoScope" )][XORSTR( "Enabled" )].asBool(),
 				.noShootEnabled = weaponSetting[XORSTR( "NoShoot" )][XORSTR( "Enabled" )].asBool(),
-				.ignoreJumpEnabled = weaponSetting[XORSTR( "IgnoreJump" )][XORSTR( "Enabled" )].asBool(),
-				.smokeCheck = weaponSetting[XORSTR( "SmokeCheck" )][XORSTR( "Enabled" )].asBool(),
+				.ignoreEnemyJumpEnabled = weaponSetting[XORSTR( "IgnoreEnemyJump" )][XORSTR( "Enabled" )].asBool(),				.smokeCheck = weaponSetting[XORSTR( "SmokeCheck" )][XORSTR( "Enabled" )].asBool(),
 				.flashCheck = weaponSetting[XORSTR( "FlashCheck" )][XORSTR( "Enabled" )].asBool(),
 				.autoWallEnabled = weaponSetting[XORSTR( "AutoWall" )][XORSTR( "Enabled" )].asBool(),
 				.autoAimRealDistance = weaponSetting[XORSTR( "AutoAim" )][XORSTR( "RealDistance" )].asBool(),
