@@ -52,6 +52,7 @@ static bool autoScopeEnabled = false;
 static bool noShootEnabled = false;
 static bool ignoreJumpEnabled = false;
 static bool ignoreEnemyJumpEnabled = false;
+static bool backtrackEnabled = false;
 static bool smokeCheck = false;
 static bool flashCheck = false;
 static bool spreadLimitEnabled = false;
@@ -61,6 +62,7 @@ static float autoWallValue = 10.0f;
 static bool autoAimRealDistance = false;
 static bool autoSlow = false;
 static bool predEnabled = false;
+static int predAmount = 8;
 
 void UI::ReloadWeaponSettings()
 {
@@ -105,6 +107,7 @@ void UI::ReloadWeaponSettings()
         noShootEnabled = Settings::Aimbot::weapons.at(index).noShootEnabled;
         ignoreJumpEnabled = Settings::Aimbot::weapons.at(index).ignoreJumpEnabled;
 	ignoreEnemyJumpEnabled = Settings::Aimbot::weapons.at(index).ignoreEnemyJumpEnabled;
+	backtrackEnabled = Settings::Aimbot::weapons.at(index).backtrackEnabled;
         smokeCheck = Settings::Aimbot::weapons.at(index).smokeCheck;
         flashCheck = Settings::Aimbot::weapons.at(index).flashCheck;
         spreadLimitEnabled = Settings::Aimbot::weapons.at(index).spreadLimitEnabled;
@@ -114,6 +117,7 @@ void UI::ReloadWeaponSettings()
         autoAimRealDistance = Settings::Aimbot::weapons.at(index).autoAimRealDistance;
         autoSlow = Settings::Aimbot::weapons.at(index).autoSlow;
         predEnabled = Settings::Aimbot::weapons.at(index).predEnabled;
+	predAmount  = Settings::Aimbot::weapons.at(index).predAmount;
 
 	curveValue[0] = Settings::Aimbot::weapons.at(index).curveValue[0];
 	curveValue[1] = Settings::Aimbot::weapons.at(index).curveValue[1];
@@ -151,6 +155,7 @@ void UI::UpdateWeaponSettings()
                 .noShootEnabled = noShootEnabled,
                 .ignoreJumpEnabled = ignoreJumpEnabled,
 		.ignoreEnemyJumpEnabled = ignoreEnemyJumpEnabled,
+		.backtrackEnabled = backtrackEnabled,
 
                 .smokeCheck = smokeCheck,
                 .flashCheck = flashCheck,
@@ -158,6 +163,7 @@ void UI::UpdateWeaponSettings()
                 .autoAimRealDistance = autoAimRealDistance,
                 .autoSlow = autoSlow,
                 .predEnabled = predEnabled,
+		.predAmount = predAmount,
 
                 .engageLockTTR = engageLockTTR,
                 .bone = bone,
@@ -524,6 +530,10 @@ void Aimbot::RenderTab()
                                         UI::UpdateWeaponSettings();
                                 if (ImGui::Checkbox(XORSTR("Prediction"), &predEnabled))
                                         UI::UpdateWeaponSettings();
+				if (ImGui::Checkbox(XORSTR("Ignore Jump (Self)"), &ignoreJumpEnabled))
+					UI::UpdateWeaponSettings();
+				if (ImGui::Checkbox(XORSTR("Backtrack"), &backtrackEnabled))
+					UI::UpdateWeaponSettings();
                         }
 			ImGui::NextColumn();
 			{
@@ -549,7 +559,7 @@ void Aimbot::RenderTab()
 
 				if (ImGui::Checkbox(XORSTR("Flash Check"), &flashCheck))
 					UI::UpdateWeaponSettings();
-				if (ImGui::Checkbox(XORSTR("Ignore Jump (Self)"), &ignoreJumpEnabled))
+				if (ImGui::SliderInt(XORSTR("Amount"), &predAmount, 1, 16))
 					UI::UpdateWeaponSettings();
 				if (ImGui::Checkbox(XORSTR("Ignore Jump (Enemies)"), &ignoreEnemyJumpEnabled))
 					UI::UpdateWeaponSettings();

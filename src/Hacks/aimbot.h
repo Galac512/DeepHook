@@ -4,6 +4,7 @@
 #include <cstdint>
 #include "../SDK/IInputSystem.h"
 #include "../SDK/IGameEvent.h"
+#include "../SDK/IClientEntity.h"
 
 namespace Aimbot
 {

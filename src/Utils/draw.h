@@ -27,16 +27,16 @@ enum DrawType
 };
 struct DrawRequest
 {
-    DrawRequest(){}
+	DrawRequest(){}
 	DrawType type;
 	int x0, y0, x1, y1;
-    int circleSegments;
-    float circleRadius;
-    float thickness;
+	int circleSegments;
+	float circleRadius;
+	float thickness;
 	ImColor color;
 	ImFontFlags fontflags;
-    Vector pos;
-    char text[256];
+	Vector pos;
+	char text[256];
 };
 
 namespace Draw {
@@ -78,11 +78,11 @@ namespace Draw {
 	void ImRectFilled( int x0, int y0, int x1, int y1, ImColor color, float rounding = 0.0f, int rounding_corners_flags = ~0 );
 	void ImRectFilled( ImVec2 a, ImVec2 b, ImColor color, float rounding = 0.0f, int rounding_corners_flags = ~0 );
 	void ImText( ImVec2 pos, ImColor color, const char* text_begin, const char* text_end = nullptr, float wrap_width = 0.0f,
-				 const ImVec4* cpu_fine_clip_rect = nullptr, ImFontFlags flags = ImFontFlags_Outline );
+	    const ImVec4* cpu_fine_clip_rect = nullptr, ImFontFlags flags = ImFontFlags_Outline );
 	void ImEnd();
 
-    // Functions to Add to DrawRequests
-    void AddLine( int x0, int y0, int x1, int y1, ImColor color );
+	// Functions to Add to DrawRequests
+	void AddLine( int x0, int y0, int x1, int y1, ImColor color );
 	void AddRect( int x0, int y0, int x1, int y1, ImColor color );
 	void AddRectFilled( int x0, int y0, int x1, int y1, ImColor color );
 	void AddCircle( int x0, int y0, float radius, ImColor color, int segments = 12, float thickness = 1.0f );

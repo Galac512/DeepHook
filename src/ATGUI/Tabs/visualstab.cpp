@@ -391,6 +391,7 @@ void Visuals::RenderTab()
                                         ImGui::PopItemWidth();
                                         ImGui::EndPopup();
                                 }
+				ImGui::Checkbox(XORSTR("Show Prediction"), &Settings::ESP::ShowPrediction::enabled);
                         }
                         ImGui::NextColumn();
                         {
@@ -408,6 +409,7 @@ void Visuals::RenderTab()
                                 ImGui::Checkbox(XORSTR("BoneMap Debug"), &Settings::Debug::BoneMap::draw);
                                 if( Settings::Debug::BoneMap::draw )
                                         ImGui::Checkbox(XORSTR("Just Dots"), &Settings::Debug::BoneMap::justDrawDots);
+				ImGui::Checkbox(XORSTR("Show Backtrack"), &Settings::ESP::ShowBacktrack::enabled);
                         }
                         ImGui::Columns(1);
                         ImGui::Separator();

@@ -302,6 +302,11 @@ public:
 		return *(unsigned char*)((uintptr_t)this + offsets.DT_BasePlayer.m_lifeState);
 	}
 
+	bool IsAlive()
+	{
+		return GetHealth() > 0 && GetLifeState() == 0;
+	}
+
 	int GetFlags()
 	{
 		return *(int*)((uintptr_t)this + offsets.DT_BasePlayer.m_fFlags);

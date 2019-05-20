@@ -94,6 +94,8 @@ BarType Settings::ESP::Bars::type = BarType::HORIZONTAL;
 bool Settings::ESP::Tracers::enabled = false;
 TracerType Settings::ESP::Tracers::type = TracerType::BOTTOM;
 bool Settings::ESP::BulletTracers::enabled = false;
+bool Settings::ESP::ShowPrediction::enabled = false;
+bool Settings::ESP::ShowBacktrack::enabled = false;
 bool Settings::ESP::FOVCrosshair::enabled = false;
 bool Settings::ESP::FOVCrosshair::filled = false;
 ColorVar Settings::ESP::FOVCrosshair::color = ImColor(255, 0, 0, 255);
@@ -279,6 +281,10 @@ static bool GetBox( C_BaseEntity* entity, int& x, int& y, int& w, int& h ) {
         return true;
 }
 
+static Vector VelocityExtrapolate(C_BasePlayer* player, Vector aimPos, int ticks=1) // From aimbot.cpp
+{
+        return aimPos + (player->GetVelocity() * globalVars->interval_per_tick * ticks);
+}
 
 ImColor ESP::GetESPPlayerColor(C_BasePlayer* player, bool visible)
 {
@@ -750,7 +756,8 @@ static void DrawAutoWall(C_BasePlayer *player) {
         }
 }
 
-static void DrawHeaddot( C_BasePlayer* player ) {
+static void DrawHeaddot( C_BasePlayer* player )
+{
 
         Vector head2D;
         Vector head3D = player->GetBonePosition( ( int ) Bone::BONE_HEAD );
@@ -959,6 +966,29 @@ static void DrawPlayerText( C_BasePlayer* player, int x, int y, int w, int h ) {
         }
 }
 
+static void DrawPrediction( C_BasePlayer* player )
+{
+	for (int ticks = 1; ticks < Settings::Aimbot::Prediction::amount; ticks++)
+        {
+		Vector head2D;
+		Vector head3D = VelocityExtrapolate(player, player->GetBonePosition( ( int ) Bone::BONE_HEAD ), ticks);
+		if ( debugOverlay->ScreenPosition( Vector( head3D.x, head3D.y, head3D.z ), head2D ) )
+			return;
+
+
+		bool bIsVisible = true;
+		if ( Settings::ESP::Filters::visibilityCheck || Settings::ESP::Filters::legit )
+			bIsVisible = Entity::IsVisible( player, ( int ) Bone::BONE_HEAD, 180.f, Settings::ESP::Filters::smokeCheck );
+
+		//if (bIsVisible)
+			Draw::AddCircleFilled( head2D.x, head2D.y, 5.f, ImColor(255, 255, 255, 255), 4 );
+	}
+}
+
+static void DrawBacktrack( C_BasePlayer* player )
+{
+}
+
 
 static void DrawPlayer(C_BasePlayer* player)
 {
@@ -1009,6 +1039,12 @@ static void DrawPlayer(C_BasePlayer* player)
 
         if (Settings::ESP::HeadDot::enabled)
                 DrawHeaddot(player);
+
+        if (Settings::ESP::ShowPrediction::enabled && Settings::Aimbot::Prediction::enabled)
+                DrawPrediction(player);
+
+        if (Settings::ESP::ShowBacktrack::enabled && Settings::Aimbot::Backtrack::enabled)
+                DrawBacktrack(player);
 
         if (Settings::Debug::AutoWall::debugView)
                 DrawAutoWall(player);

@@ -203,14 +203,16 @@ void Settings::LoadDefaultsOrSave(std::string path)
 		weaponSetting[XORSTR("NoShoot")][XORSTR("Enabled")] = i.second.noShootEnabled;
 		weaponSetting[XORSTR("IgnoreJump")][XORSTR("Enabled")] = i.second.ignoreJumpEnabled;
 		weaponSetting[XORSTR("IgnoreEnemyJump")][XORSTR("Enabled")] = i.second.ignoreEnemyJumpEnabled;
+		weaponSetting[XORSTR("Backtrack")][XORSTR("Enabled")] = i.second.backtrackEnabled;
 		weaponSetting[XORSTR("SmokeCheck")][XORSTR("Enabled")] = i.second.smokeCheck;
 		weaponSetting[XORSTR("FlashCheck")][XORSTR("Enabled")] = i.second.flashCheck;
 		weaponSetting[XORSTR("SpreadLimit")][XORSTR("Enabled")] = i.second.spreadLimitEnabled;
 		weaponSetting[XORSTR("SpreadLimit")][XORSTR("Value")] = i.second.spreadLimit;
 		weaponSetting[XORSTR("AutoWall")][XORSTR("Enabled")] = i.second.autoWallEnabled;
 		weaponSetting[XORSTR("AutoWall")][XORSTR("Value")] = i.second.autoWallValue;
-		weaponSetting[XORSTR("AutoSlow")][XORSTR("enabled")] = i.second.autoSlow;
-		weaponSetting[XORSTR("Prediction")][XORSTR("enabled")] = i.second.predEnabled;
+		weaponSetting[XORSTR("AutoSlow")][XORSTR("Enabled")] = i.second.autoSlow;
+		weaponSetting[XORSTR("Prediction")][XORSTR("Enabled")] = i.second.predEnabled;
+		weaponSetting[XORSTR("Prediction")][XORSTR("Amount")] = i.second.predAmount;
 
 		for (int bone = (int) DesiredBones::BONE_PELVIS; bone <= (int) DesiredBones::BONE_RIGHT_SOLE; bone++)
 			weaponSetting[XORSTR("DesiredBones")][XORSTR("Bones")][bone] = i.second.desiredBones[bone];
@@ -357,6 +359,9 @@ void Settings::LoadDefaultsOrSave(std::string path)
 	settings[XORSTR("TracerEffects")][XORSTR("effect")] = (int) Settings::TracerEffects::effect;
 	settings[XORSTR("TracerEffects")][XORSTR("frequency")] = Settings::TracerEffects::frequency;
 
+	settings[XORSTR("ESP")][XORSTR("ShowPrediction")][XORSTR("enabled")] = Settings::ESP::ShowPrediction::enabled;
+	
+	settings[XORSTR("ESP")][XORSTR("ShowBacktrack")][XORSTR("enabled")] = Settings::ESP::ShowBacktrack::enabled;
 
 	settings[XORSTR("Spammer")][XORSTR("spammer_type")] = (int) Settings::Spammer::type;
 	settings[XORSTR("Spammer")][XORSTR("say_team")] = Settings::Spammer::say_team;
@@ -648,6 +653,7 @@ void Settings::LoadConfig(std::string path)
 				.autoAimRealDistance = weaponSetting[XORSTR( "AutoAim" )][XORSTR( "RealDistance" )].asBool(),
 				.autoSlow = weaponSetting[XORSTR( "AutoSlow" )][XORSTR( "enabled" )].asBool(),
 				.predEnabled = weaponSetting[XORSTR( "Prediction" )][XORSTR( "enabled" )].asBool(),
+				.predAmount = weaponSetting[XORSTR( "Prediction" )][XORSTR( "amount" )].asInt(),
 
 				.engageLockTTR = weaponSetting[XORSTR( "engageLockTTR" )].asInt(),
 				.bone = (Bone) weaponSetting[XORSTR( "TargetBone" )].asInt(),

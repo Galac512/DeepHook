@@ -137,112 +137,118 @@ enum class AntiAimType_X : int
 
 struct AimbotWeapon_t
 {
-        bool enabled,
-                silent,
-                friendly,
-                closestBone,
-                engageLock,
-                engageLockTR,
-                aimkeyOnly,
-                smoothEnabled,
-                smoothSaltEnabled,
-                errorMarginEnabled,
+	bool enabled,
+		silent,
+		friendly,
+		closestBone,
+		engageLock,
+		engageLockTR,
+		aimkeyOnly,
+		smoothEnabled,
+		smoothSaltEnabled,
+		errorMarginEnabled,
 		curveEnabled,
-                autoAimEnabled,
-                aimStepEnabled,
-                rcsEnabled,
-                rcsAlwaysOn,
-                spreadLimitEnabled,
-                autoPistolEnabled,
-                autoShootEnabled,
-                autoScopeEnabled,
-                noShootEnabled,
-                ignoreJumpEnabled,
+		autoAimEnabled,
+		aimStepEnabled,
+		rcsEnabled,
+		rcsAlwaysOn,
+		spreadLimitEnabled,
+		autoPistolEnabled,
+		autoShootEnabled,
+		autoScopeEnabled,
+		noShootEnabled,
+		ignoreJumpEnabled,
 		ignoreEnemyJumpEnabled,
-                smokeCheck,
-                flashCheck,
-                autoWallEnabled,
-                autoAimRealDistance,
-                autoSlow,
-                predEnabled;
-        int engageLockTTR = 700;
-        Bone bone = Bone::BONE_HEAD;
-        SmoothType smoothType = SmoothType::SLOW_END;
-        ButtonCode_t aimkey = ButtonCode_t ::MOUSE_MIDDLE;
-        float smoothAmount = 1.0f,
-                smoothSaltMultiplier = 0.0f,
-                errorMarginValue = 0.0f,
-                autoAimFov = 180.0f,
-                aimStepMin = 25.0f,
-                aimStepMax = 35.0f,
-                rcsAmountXMin = 0.5f,
-                rcsAmountXMax = 1.5f,
-                rcsAmountXSpeed = 0.1f,
-                rcsAmountYMin = 0.5f,
-                rcsAmountYMax = 1.5f,
-                rcsAmountYSpeed = 0.5f,
-                autoWallValue = 10.0f,
-                spreadLimit = 1.0f;
-        float curveValue[5] = { 0.390f, 0.575f, 0.565f, 0.900f };
-        bool desiredBones[31];
+		backtrackEnabled,
+		smokeCheck,
+		flashCheck,
+		autoWallEnabled,
+		autoAimRealDistance,
+		autoSlow,
+		predEnabled;
+	int predAmount = 8,
+		engageLockTTR = 700;
+	Bone bone = Bone::BONE_HEAD;
+	SmoothType smoothType = SmoothType::SLOW_END;
+	ButtonCode_t aimkey = ButtonCode_t ::MOUSE_MIDDLE;
+	float smoothAmount = 1.0f,
+		smoothSaltMultiplier = 0.0f,
+		errorMarginValue = 0.0f,
+		autoAimFov = 180.0f,
+		aimStepMin = 25.0f,
+		aimStepMax = 35.0f,
+		rcsAmountXMin = 0.5f,
+		rcsAmountXMax = 1.5f,
+		rcsAmountXSpeed = 0.1f,
+		rcsAmountYMin = 0.5f,
+		rcsAmountYMax = 1.5f,
+		rcsAmountYSpeed = 0.5f,
+		autoWallValue = 10.0f,
+		spreadLimit = 1.0f;
+	float curveValue[5] = { 0.390f, 0.575f, 0.565f, 0.900f };
+	bool desiredBones[31];
 
-        bool operator == (const AimbotWeapon_t& another) const
-        {
-                for (int bone = (int) DesiredBones::BONE_PELVIS; bone <= (int) DesiredBones::BONE_RIGHT_SOLE; bone++)
-                {
-                        if( this->desiredBones[bone] != another.desiredBones[bone] )
-                                return false;
-                }
+	bool operator == (const AimbotWeapon_t& another) const
+	{
+		for (int bone = (int) DesiredBones::BONE_PELVIS; bone <= (int) DesiredBones::BONE_RIGHT_SOLE; bone++)
+		{
+			if( this->desiredBones[bone] != another.desiredBones[bone] )
+				return false;
+		}
 
-                return this->enabled == another.enabled &&
-                    this->silent == another.silent &&
-                    this->friendly == another.friendly &&
-                    this->closestBone == another.closestBone &&
-                    this->engageLock == another.engageLock &&
-                    this->engageLockTR == another.engageLockTR &&
-                    this->engageLockTTR == another.engageLockTTR &&
-                    this->bone == another.bone &&
-                    this->aimkey == another.aimkey &&
-                    this->aimkeyOnly == another.aimkeyOnly &&
-                    this->smoothEnabled == another.smoothEnabled &&
-                    this->smoothAmount == another.smoothAmount &&
-                    this->smoothType == another.smoothType &&
-                    this->smoothSaltEnabled == another.smoothSaltEnabled &&
-                    this->smoothSaltMultiplier == another.smoothSaltMultiplier &&
-                    this->errorMarginEnabled == another.errorMarginEnabled &&
-                    this->errorMarginValue == another.errorMarginValue &&
+		return this->enabled == another.enabled &&
+		    this->silent == another.silent &&
+		    this->friendly == another.friendly &&
+		    this->closestBone == another.closestBone &&
+		    this->engageLock == another.engageLock &&
+		    this->engageLockTR == another.engageLockTR &&
+		    this->engageLockTTR == another.engageLockTTR &&
+		    this->bone == another.bone &&
+		    this->aimkey == another.aimkey &&
+		    this->aimkeyOnly == another.aimkeyOnly &&
+		    this->smoothEnabled == another.smoothEnabled &&
+		    this->smoothAmount == another.smoothAmount &&
+		    this->smoothType == another.smoothType &&
+		    this->smoothSaltEnabled == another.smoothSaltEnabled &&
+		    this->smoothSaltMultiplier == another.smoothSaltMultiplier &&
+		    this->errorMarginEnabled == another.errorMarginEnabled &&
+		    this->errorMarginValue == another.errorMarginValue &&
 		    this->curveEnabled == another.curveEnabled &&
-                    this->curveValue[0] == another.curveValue[0] &&
-                    this->curveValue[1] == another.curveValue[1] &&
-                    this->curveValue[2] == another.curveValue[2] &&
-                    this->curveValue[3] == another.curveValue[3] &&
-                    this->autoAimEnabled == another.autoAimEnabled &&
-                    this->autoAimFov == another.autoAimFov &&
-                    this->aimStepEnabled == another.aimStepEnabled &&
-                    this->aimStepMin == another.aimStepMin &&
-                    this->aimStepMax == another.aimStepMax &&
-                    this->rcsEnabled == another.rcsEnabled &&
-                    this->rcsAlwaysOn == another.rcsAlwaysOn &&
-                    this->rcsAmountXMin == another.rcsAmountXMin &&
-                    this->rcsAmountXMax == another.rcsAmountXMax &&
-                    this->rcsAmountXSpeed == another.rcsAmountXSpeed &&
-                    this->rcsAmountYMin == another.rcsAmountYMin &&
-                    this->rcsAmountYMax == another.rcsAmountYMax &&
-                    this->rcsAmountYSpeed == another.rcsAmountYSpeed &&
-                    this->autoPistolEnabled == another.autoPistolEnabled &&
-                    this->autoShootEnabled == another.autoShootEnabled &&
-                    this->autoScopeEnabled == another.autoScopeEnabled &&
-                    this->noShootEnabled == another.noShootEnabled &&
-		    this->ignoreEnemyJumpEnabled == another.ignoreEnemyJumpEnabled &&                    this->smokeCheck == another.smokeCheck &&
-                    this->flashCheck == another.flashCheck &&
-                    this->spreadLimitEnabled == another.spreadLimitEnabled &&
-                    this->spreadLimit == another.spreadLimit &&
-                    this->autoWallEnabled == another.autoWallEnabled &&
-                    this->autoWallValue == another.autoWallValue &&
-                    this->autoSlow == another.autoSlow &&
-                    this->predEnabled == another.predEnabled &&
-                    this->autoAimRealDistance == another.autoAimRealDistance;
-        }
+		    this->curveValue[0] == another.curveValue[0] &&
+		    this->curveValue[1] == another.curveValue[1] &&
+		    this->curveValue[2] == another.curveValue[2] &&
+		    this->curveValue[3] == another.curveValue[3] &&
+		    this->autoAimEnabled == another.autoAimEnabled &&
+		    this->autoAimFov == another.autoAimFov &&
+		    this->aimStepEnabled == another.aimStepEnabled &&
+		    this->aimStepMin == another.aimStepMin &&
+		    this->aimStepMax == another.aimStepMax &&
+		    this->rcsEnabled == another.rcsEnabled &&
+		    this->rcsAlwaysOn == another.rcsAlwaysOn &&
+		    this->rcsAmountXMin == another.rcsAmountXMin &&
+		    this->rcsAmountXMax == another.rcsAmountXMax &&
+		    this->rcsAmountXSpeed == another.rcsAmountXSpeed &&
+		    this->rcsAmountYMin == another.rcsAmountYMin &&
+		    this->rcsAmountYMax == another.rcsAmountYMax &&
+		    this->rcsAmountYSpeed == another.rcsAmountYSpeed &&
+		    this->autoPistolEnabled == another.autoPistolEnabled &&
+		    this->autoShootEnabled == another.autoShootEnabled &&
+		    this->autoScopeEnabled == another.autoScopeEnabled &&
+		    this->noShootEnabled == another.noShootEnabled &&
+		    this->ignoreJumpEnabled == another.ignoreJumpEnabled &&
+		    this->ignoreEnemyJumpEnabled == another.ignoreEnemyJumpEnabled &&
+		    this->backtrackEnabled == another.backtrackEnabled &&
+		    this->smokeCheck == another.smokeCheck &&
+		    this->flashCheck == another.flashCheck &&
+		    this->spreadLimitEnabled == another.spreadLimitEnabled &&
+		    this->spreadLimit == another.spreadLimit &&
+		    this->autoWallEnabled == another.autoWallEnabled &&
+		    this->autoWallValue == another.autoWallValue &&
+		    this->autoSlow == another.autoSlow &&
+		    this->predEnabled == another.predEnabled &&
+		    this->predAmount == another.predAmount &&
+		    this->autoAimRealDistance == another.autoAimRealDistance;
+	}
 } const defaultSettings{};
 
 class ColorVar
@@ -470,6 +476,11 @@ namespace Settings
 			extern bool enabled;
 		}
 
+		namespace Backtrack
+		{
+			extern bool enabled;
+		}
+
                 namespace SmokeCheck
                 {
                         extern bool enabled;
@@ -489,6 +500,7 @@ namespace Settings
                 namespace Prediction
                 {
                         extern bool enabled;
+			extern int amount;
                 }
 
                 extern std::unordered_map<ItemDefinitionIndex, AimbotWeapon_t, Util::IntHash<ItemDefinitionIndex>> weapons;
@@ -753,6 +765,16 @@ namespace Settings
                         extern ColorVar color;
                         extern ColorVar spreadLimitColor;
                 }
+
+		namespace ShowPrediction
+		{
+			extern bool enabled;
+		}
+
+		namespace ShowBacktrack
+		{
+			extern bool enabled;
+		}
         }
 
         namespace MaterialConfig {
@@ -1057,6 +1079,7 @@ namespace Settings
                 extern int frequency;
 
         }
+
         namespace AutoKnife
         {
                 extern bool enabled;

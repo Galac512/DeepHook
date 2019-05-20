@@ -67,6 +67,7 @@ float Settings::Aimbot::Curve::value[5] = { 0.390f, 0.575f, 0.565f, 0.900f };
 bool Settings::Aimbot::AutoSlow::enabled = false;
 bool Settings::Aimbot::AutoSlow::goingToSlow = false;
 bool Settings::Aimbot::Prediction::enabled = false;
+int Settings::Aimbot::Prediction::amount = 8;
 
 bool Aimbot::aimStepInProgress = false;
 std::vector<int64_t> Aimbot::friends = { };
@@ -215,9 +216,9 @@ static float GetRealDistanceFOV(float distance, QAngle angle, CUserCmd* cmd)
         return aimingAt.DistTo(aimAt);
 }
 
-static Vector VelocityExtrapolate(C_BasePlayer* player, Vector aimPos)
+static Vector VelocityExtrapolate(C_BasePlayer* player, Vector aimPos, int ticks=1)
 {
-        return aimPos + (player->GetVelocity() * globalVars->interval_per_tick);
+        return aimPos + (player->GetVelocity() * globalVars->interval_per_tick * ticks);
 }
 
 /* Original Credits to: https://github.com/goldenguy00 ( study! study! study! :^) ) */
@@ -531,7 +532,7 @@ static void Salt(float& smooth)
         smooth *= oval;
 }
 
-static void Smooth(C_BasePlayer* player, QAngle& angle)
+static void Smooth(C_BasePlayer* player, Vector bestSpot, C_BasePlayer* localplayer, Vector localEye,  QAngle& angle, int& pPred)
 {
         if (!Settings::Aimbot::Smooth::enabled)
                 return;
@@ -571,7 +572,7 @@ static void Smooth(C_BasePlayer* player, QAngle& angle)
                 coeff = std::min(1.f, coeff);
                 toChange = delta * coeff;
         }
-
+	
         if (Settings::Aimbot::Curve::enabled)
         {
                 float progress = toChange.y / delta.y;
@@ -582,6 +583,23 @@ static void Smooth(C_BasePlayer* player, QAngle& angle)
                         //cvar->ConsoleColorPrintf(ColorRGBA(255, 0, 0), XORSTR("ToChange = { %f., %f }\nProgress = %f\n"), toChange.y, toChange.x, progress);
                 }
         }
+
+	if (Settings::Aimbot::Prediction::enabled)
+	{
+		static QAngle lastDelta = delta;
+		if (delta.Length() > lastDelta.Length())
+		{
+			lastDelta = delta;
+			pPred = std::min(Settings::Aimbot::Prediction::amount, pPred+(int)(2*lastDelta.Length()/delta.Length()));
+		}
+		else
+			pPred = std::max(1, pPred-1);
+		/*Vector theta = {0, 0, 0};
+		Math::AngleVectors(toChange, theta);
+		float ticks = (bestSpot.y + theta.y ) / (localEye.y + (player->GetVelocity() * globalVars->interval_per_tick).y);
+		
+		pPred = std::min(Settings::Aimbot::Prediction::amount, (int)(ticks));*/
+	}
 
         angle = viewAngles + toChange;
 }
@@ -780,6 +798,10 @@ void Aimbot::CreateMove(CUserCmd* cmd)
         Vector localEye = localplayer->GetEyePosition();
 
 
+	static int pPred = 1;
+	if (!Settings::Aimbot::Prediction::enabled || !Settings::Aimbot::Smooth::enabled)
+		pPred = 1;
+
         shouldAim = Settings::Aimbot::AutoShoot::enabled;
 
         if (Settings::Aimbot::IgnoreJump::enabled && (!(localplayer->GetFlags() & FL_ONGROUND) && localplayer->GetMoveType() != MOVETYPE_LADDER))
@@ -815,8 +837,8 @@ void Aimbot::CreateMove(CUserCmd* cmd)
                         {
                                 if ( Settings::Aimbot::Prediction::enabled )
                                 {
-                                        localEye = VelocityExtrapolate( localplayer, localEye ); // get eye pos next tick
-                                        bestSpot = VelocityExtrapolate( player, bestSpot ); // get target pos next tick
+                                        localEye = VelocityExtrapolate( localplayer, localEye, pPred ); // get eye pos next tick
+                                        bestSpot = VelocityExtrapolate( player, bestSpot, pPred ); // get target pos next tick
                                 }
                                 angle = Math::CalcAngle(localEye, bestSpot);
 
@@ -848,7 +870,7 @@ void Aimbot::CreateMove(CUserCmd* cmd)
         AutoShoot(player, activeWeapon, cmd);
         AutoCock(player, activeWeapon, cmd);
         RCS(angle, player, cmd);
-        Smooth(player, angle);
+        Smooth(player, bestSpot, localplayer, localEye, angle, pPred);
         NoShoot(activeWeapon, player, cmd);
 
         Math::NormalizeAngles(angle);
@@ -887,6 +909,7 @@ void Aimbot::FireGameEvent(IGameEvent* event)
                 killTimes.push_back(Util::GetEpochTime());
         }
 }
+
 void Aimbot::UpdateValues()
 {
         C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
@@ -948,6 +971,8 @@ void Aimbot::UpdateValues()
         Settings::Aimbot::AutoWall::enabled = currentWeaponSetting.autoWallEnabled;
         Settings::Aimbot::AutoWall::value = currentWeaponSetting.autoWallValue;
         Settings::Aimbot::AutoSlow::enabled = currentWeaponSetting.autoSlow;
+	Settings::Aimbot::Prediction::enabled = currentWeaponSetting.predEnabled;
+	Settings::Aimbot::Prediction::amount = currentWeaponSetting.predAmount;
 
         for (int bone = (int) DesiredBones::BONE_PELVIS; bone <= (int) DesiredBones::BONE_RIGHT_SOLE; bone++)
                 Settings::Aimbot::AutoAim::desiredBones[bone] = currentWeaponSetting.desiredBones[bone];
