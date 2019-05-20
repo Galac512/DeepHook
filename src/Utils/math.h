@@ -8,6 +8,7 @@ namespace Math {
 	void inline SinCos(float radians, float *sine, float *cosine);
 	void AngleVectors(const QAngle &angles, Vector &forward);
 	void NormalizeAngles(QAngle& angle);
+	void AngleVectors( const Vector& angles, Vector* forward, Vector* right, Vector* up );
 	void NormalizeYaw( float& yaw );
 	void ClampAngles(QAngle& angle);
 	void CorrectMovement(const QAngle &vOldAngles, CUserCmd* pCmd, float fOldForward, float fOldSidemove);

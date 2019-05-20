@@ -355,9 +355,17 @@ bool ESP::WorldToScreen( const Vector &origin, ImVec2 * const screen ) {
         if ( w < 0.01f ) // Is Not in front of our player
                 return false;
 
-        static float width = ImGui::GetWindowWidth();
-        static float height = ImGui::GetWindowHeight();
-        static float halfWidth = width / 2;
+	static int iWidth = 0;
+	static int iHeight = 0;
+	static float width;
+	static float height;
+	if (!iWidth)
+	{
+		engine->GetScreenSize(iWidth, iHeight);
+		width = (float)iWidth;//ImGui::GetWindowWidth();
+		height = (float)iHeight;//ImGui::GetWindowHeight();
+	}
+	static float halfWidth = width / 2;
         static float halfHeight = height / 2;
 
         float inverseW = 1 / w;
