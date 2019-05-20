@@ -47,7 +47,7 @@ void Misc::RenderTab()
                                 ImGui::Separator();
                                 ImGui::Columns(2, nullptr, false);
                                 {
-                                        ImGui::Checkbox(XORSTR("Hop Chance"), &Settings::BHop::Chance::enabled);
+                                        ImGui::Checkbox(XORSTR("Hop Chane"), &Settings::BHop::Chance::enabled);
                                         ImGui::Checkbox(XORSTR("Min Hops"), &Settings::BHop::Hops::enabledMin);
                                         ImGui::Checkbox(XORSTR("Max Hops"), &Settings::BHop::Hops::enabledMax);
                                 }
@@ -439,6 +439,7 @@ void Misc::RenderTab()
                                 ImGui::Checkbox(XORSTR("Auto Defuse"), &Settings::AutoDefuse::enabled);
                                 ImGui::Checkbox(XORSTR("Sniper Crosshair"), &Settings::SniperCrosshair::enabled);
                                 ImGui::Checkbox(XORSTR("Disable post-processing"), &Settings::DisablePostProcessing::enabled);
+				ImGui::Checkbox(XORSTR("No Duck Cooldown"), &Settings::NoDuckCooldown::enabled);	
                         }
                         ImGui::NextColumn();
                         {
