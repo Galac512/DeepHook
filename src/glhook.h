@@ -12,3 +12,9 @@ namespace SDL2
 	int PollEvent(SDL_Event*);
 	void UnhookPollEvent();
 }
+
+namespace ImGui
+{
+	extern ImFont* menuFont;
+	extern ImFont* weaponFont;
+}

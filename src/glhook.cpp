@@ -3,13 +3,17 @@
 #include "interfaces.h"
 #include "shortcuts.h"
 #include "ATGUI/atgui.h"
-#include "Resources/Bahnschrift.h"
 #include "Hooks/hooks.h"
-#include "ImGUI/fonts/KaiGenGothicCNRegular.h"
 #include "Utils/draw.h"
 #include "ImGUI/imgui_internal.h"
 
+#include "ImGUI/fonts/KaiGenGothicCNRegular.h"
+#include "Resources/Bahnschrift.h"
+#include "Resources/Icons.h"
+
 SDL_GLContext context = nullptr;
+ImFont* ImGui::menuFont = NULL;
+ImFont* ImGui::weaponFont = NULL;
 
 void SDL2::SwapWindow(SDL_Window* window)
 {
@@ -49,6 +53,10 @@ void SDL2::SwapWindow(SDL_Window* window)
 
                 // Add Bahnschrift as default font
                 io.Fonts->AddFontFromMemoryCompressedBase85TTF(Bahnschrift_compressed_data_base85, 18.0f, &config, BahnschriftRegular_ranges);
+
+		// Add icons
+		ImGui::menuFont = io.Fonts->AddFontFromMemoryCompressedTTF(iconMenuFont_compressed_data, iconMenuFont_compressed_size, 54.f);
+		ImGui::weaponFont = io.Fonts->AddFontFromMemoryCompressedTTF(iconWeaponFont_compressed_data, iconWeaponFont_compressed_size, 30.f);
 
                 // Enable MergeMode and add additional fonts
                 config.MergeMode = true;

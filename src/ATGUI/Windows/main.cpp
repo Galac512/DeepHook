@@ -10,6 +10,8 @@
 #include "../Tabs/triggerbottab.h"
 #include "../Tabs/visualstab.h"
 
+#include "../../glhook.h"
+
 bool Main::showWindow = true;
 
 void Main::RenderWindow()
@@ -44,23 +46,26 @@ void Main::RenderWindow()
 		Settings::UI::Windows::Main::posX = (int)temp.x;
 		Settings::UI::Windows::Main::posY = (int)temp.y;
 		const char* tabs[] = {
-				"Aimbot",
-				"Triggerbot",
-				"Visuals",
-				"HvH",
-				"Misc",
+				"l",
+				"l",
+				"V",
+				"r",
+				"M",
 		};
 
+		ImGui::PushFont(ImGui::menuFont);
+		float width = ImGui::GetWindowSize().x / IM_ARRAYSIZE(tabs) - 9;
 		for (int i = 0; i < IM_ARRAYSIZE(tabs); i++)
 		{
 			int distance = i == page ? 0 : i > page ? i - page : page - i;
 
-			if (ImGui::Button(tabs[i], ImVec2(ImGui::GetWindowSize().x / IM_ARRAYSIZE(tabs) - 9, 0)))
+			if (ImGui::Button(tabs[i], ImVec2(width, width/3.f)))
 				page = i;
 
 			if (i < IM_ARRAYSIZE(tabs) - 1)
 				ImGui::SameLine();
 		}
+		ImGui::PopFont();
 
 		ImGui::Separator();
 
