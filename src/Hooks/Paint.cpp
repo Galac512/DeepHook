@@ -75,7 +75,7 @@ void Hooks::Paint(void* thisptr, PaintMode_t mode)
                                 case DRAW_TEXT:
                                         Draw::Text( value.x0, value.y0, value.text, esp_font, Color::FromImColor( value.color ) );
                                         break;
-                                case DRAW_WEAPON_TEXT:
+                                case DRAW_ITEM_TEXT:
                                         Draw::Text( value.x0, value.y0, value.text, esp_font, Color::FromImColor( value.color ) );
                                         break;
                                 }
@@ -120,7 +120,7 @@ void Hooks::PaintImGui()
                 case DRAW_TEXT:
                         Draw::ImText( ImVec2( value.x0, value.y0 ), value.color, value.text, nullptr, 0.0f, nullptr, value.fontflags );
                         break;
-                case DRAW_WEAPON_TEXT:
+                case DRAW_ITEM_TEXT:
                         Draw::ImText( ImVec2( value.x0, value.y0 ), value.color, value.text, nullptr, 0.0f, nullptr, value.fontflags, ImGui::weaponFont );
                         break;
 #undef value

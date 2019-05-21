@@ -24,7 +24,7 @@ enum DrawType
 	DRAW_CIRCLE_FILLED,
 	DRAW_CIRCLE_3D,
 	DRAW_TEXT,
-	DRAW_WEAPON_TEXT,
+	DRAW_ITEM_TEXT,
 };
 struct DrawRequest
 {
@@ -90,5 +90,5 @@ namespace Draw {
 	void AddCircleFilled( int x0, int y0, float radius, ImColor color, int segments = 12 );
 	void AddCircle3D( const Vector &pos3D, float radius, ImColor color, int segments );
 	void AddText( int x0, int y0, const char *text, ImColor color, ImFontFlags flags = ImFontFlags_Outline );
-	void AddWeaponText( int x0, int y0, const char *text, ImColor color, ImFontFlags flags = ImFontFlags_Outline );
+	void AddItemText( int x0, int y0, const char *text, ImColor color, ImFontFlags flags = ImFontFlags_Outline );
 }

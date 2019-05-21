@@ -331,14 +331,14 @@ void Draw::AddText( int x0, int y0, const char *text, ImColor color, ImFontFlags
     drawRequests.push_back( req );
 }
 
-void Draw::AddWeaponText( int x0, int y0, const char *text, ImColor color, ImFontFlags flags )
+void Draw::AddItemText( int x0, int y0, const char *text, ImColor color, ImFontFlags flags )
 {
     DrawRequest req = {};
     if( text ){
         strncpy( req.text, text, sizeof( req.text ) );
         req.text[sizeof(req.text) - 1] = '\0';
     }
-    req.type = DRAW_WEAPON_TEXT;
+    req.type = DRAW_ITEM_TEXT;
     req.x0 = x0;
     req.y0 = y0;
     req.color = color;

@@ -567,9 +567,30 @@ static void DrawEntity( C_BaseEntity* entity, const char* string, ImColor color 
         if ( !GetBox( entity, x, y, w, h ) )
                 return;
 
-        DrawBox( color, x, y, w, h, entity );
+	if (Settings::ESP::Boxes::enabled)
+		DrawBox( color, x, y, w, h, entity );
         Vector2D nameSize = Draw::GetTextSize( string, esp_font );
         Draw::AddText(( int ) ( x + ( w / 2 ) - ( nameSize.x / 2 ) ), y + h + 2, string, color );
+}
+
+static void DrawItemEntity( C_BaseEntity* entity, const char* string, ImColor color, const Vector2D& nameSize, const float& fillPercent=-1.f)
+{
+        int x, y, w, h;
+        if ( !GetBox( entity, x, y, w, h ) )
+                return;
+
+
+	if (Settings::ESP::Boxes::enabled)
+		DrawBox( color, x, y, w, h, entity );
+        Draw::AddItemText(( int ) ( x + ( w / 2 ) - ( nameSize.x / 2 ) ), y + h + 2, string, color );
+
+	if (fillPercent > 0.f)
+	{
+		x = x + w/2 - 40;
+		y = y + h + 24;
+		Draw::AddRectFilled( x-1, y-1, x+82, y+8, ImColor(50, 50, 50, 255) );
+		Draw::AddRectFilled( x, y, x+(80)*fillPercent, y+6, color );
+	}
 }
 
 static void DrawSkeleton( C_BasePlayer* player )
@@ -830,7 +851,8 @@ static void DrawPlayerHealthBars( C_BasePlayer* player, int x, int y, int w, int
         else if ( Settings::ESP::Bars::colorType == BarColorType::STATIC_COLOR )
                 barColor = color ;
 
-        if ( Settings::ESP::Bars::type == BarType::VERTICAL ) {
+        if ( Settings::ESP::Bars::type == BarType::VERTICAL )
+	{
                 barw = 4; // outline(1px) + bar(2px) + outline(1px) = 6px;
                 barx -= barw + boxSpacing; // spacing(1px) + outline(1px) + bar(2px) + outline (1px) = 8 px
                 Draw::AddRectFilled( barx, bary, barx + barw, bary + barh, ImColor( 10, 10, 10, 255 ) );
@@ -840,7 +862,9 @@ static void DrawPlayerHealthBars( C_BasePlayer* player, int x, int y, int w, int
                             barx + barw - 1, bary + barh - 1, barColor);
 
                 barsSpacing.x += barw;
-        } else if ( Settings::ESP::Bars::type == BarType::VERTICAL_RIGHT ) {
+        }
+	else if ( Settings::ESP::Bars::type == BarType::VERTICAL_RIGHT )
+	{
                 barx += barw + boxSpacing; // spacing(1px) + outline(1px) + bar(2px) + outline (1px) = 8 px
                 barw = 4; // outline(1px) + bar(2px) + outline(1px) = 6px;
 
@@ -851,25 +875,31 @@ static void DrawPlayerHealthBars( C_BasePlayer* player, int x, int y, int w, int
                             bary + barh - 1, barColor );
 
                 barsSpacing.x += barw;
-        } else if ( Settings::ESP::Bars::type == BarType::HORIZONTAL ) {
+        }
+	else if ( Settings::ESP::Bars::type == BarType::HORIZONTAL )
+	{
                 bary += barh + boxSpacing; // player box(?px) + spacing(1px) + outline(1px) + bar(2px) + outline (1px) = 5 px
                 barh = 4; // outline(1px) + bar(2px) + outline(1px) = 4px;
 
                 Draw::AddRectFilled( barx, bary, barx + barw, bary + barh, ImColor( 10, 10, 10, 255 ) );
 
-                if ( HealthPerc > 0 ) {
+                if ( HealthPerc > 0 )
+		{
                         barw *= HealthPerc;
                         Draw::AddRect( barx + 1, bary + 1, barx + barw - 1, bary + barh - 1, barColor );
                 }
                 barsSpacing.y += barh;
-        } else if ( Settings::ESP::Bars::type == BarType::HORIZONTAL_UP ) {
+        }
+	else if ( Settings::ESP::Bars::type == BarType::HORIZONTAL_UP )
+	{
                 barh = 4; // outline(1px) + bar(2px) + outline(1px) = 4px;
                 bary -= barh + boxSpacing; // spacing(1px) + outline(1px) + bar(2px) + outline (1px) = 5 px
 
                 Draw::AddRect( barx - 1, bary - 1, barx + barw + 1, bary + barh + 1, ImColor( 255, 255, 255, 170 ) );
                 Draw::AddRectFilled( barx, bary, barx + barw, bary + barh, ImColor( 10, 10, 10, 255 ) );
 
-                if ( HealthPerc > 0 ) {
+                if ( HealthPerc > 0 )
+		{
                         barw *= HealthPerc;
                         Draw::AddRect( barx + 1, bary + 1, barx + barw - 1, bary + barh - 1, barColor );
                 }
@@ -877,7 +907,8 @@ static void DrawPlayerHealthBars( C_BasePlayer* player, int x, int y, int w, int
         }
 }
 
-static void DrawPlayerText( C_BasePlayer* player, int x, int y, int w, int h ) {
+static void DrawPlayerText( C_BasePlayer* player, int x, int y, int w, int h )
+{
         int boxSpacing = Settings::ESP::Boxes::enabled ? 3 : 0;
         int lineNum = 1;
         int nameOffset = ( int ) ( Settings::ESP::Bars::type == BarType::HORIZONTAL_UP ? boxSpacing + barsSpacing.y : 0 );
@@ -935,14 +966,14 @@ static void DrawPlayerText( C_BasePlayer* player, int x, int y, int w, int h ) {
 		if (Settings::ESP::backend == DrawingBackend::IMGUI)
                 {
 			std::string modelName = activeWeapon->GetIcon();
-			Draw::AddWeaponText((x + (w / 2) - (ImGui::weaponFont->ConfigData->SizePixels / 2)), y + h + offset, modelName.c_str(), ImColor(255, 255, 255, 255));
+			Draw::AddItemText((x + (w / 2) - (ImGui::weaponFont->ConfigData->SizePixels / 2)), y + h + offset, modelName.c_str(), ImColor(255, 255, 255, 255));
 		}
 		else
 		{
 			std::string modelName = Util::Items::GetItemDisplayName( *activeWeapon->GetItemDefinitionIndex() );
 	
 			Vector2D weaponTextSize = Draw::GetTextSize( modelName.c_str(), esp_font );
-			Draw::AddWeaponText( ( x + ( w / 2 ) - ( weaponTextSize.x / 2 ) ), y + h + offset, modelName.c_str(), ImColor( 255, 255, 255, 255 ) );
+			Draw::AddItemText( ( x + ( w / 2 ) - ( weaponTextSize.x / 2 ) ), y + h + offset, modelName.c_str(), ImColor( 255, 255, 255, 255 ) );
 		}
 	}
         // draw info
@@ -1010,6 +1041,7 @@ static void DrawPrediction( C_BasePlayer* player )
 
 static void DrawBacktrack( C_BasePlayer* player )
 {
+	//TODO
 }
 
 
@@ -1091,7 +1123,21 @@ static void DrawBomb(C_BaseCombatWeapon* bomb)
 {
         if (!(*csGameRules) || !(*csGameRules)->IsBombDropped())
                 return;
-        DrawEntity(bomb, XORSTR("Bomb"), Settings::ESP::bombColor.Color());
+
+
+	if (Settings::ESP::backend == DrawingBackend::IMGUI)
+        {
+		std::string modelName = bomb->GetIcon();
+
+		Vector2D nameSize = {ImGui::weaponFont->ConfigData->SizePixels, 0.f};
+		DrawItemEntity(bomb, modelName.c_str(), Settings::ESP::bombColor.Color(), nameSize);
+	}
+	else
+	{
+		std::string modelName = "Bomb";
+		Vector2D nameSize = Draw::GetTextSize( modelName.c_str(), esp_font );
+		DrawItemEntity(bomb, modelName.c_str(), Settings::ESP::bombColor.Color(), nameSize);
+	}
 }
 
 static void DrawPlantedBomb(C_PlantedC4* bomb)
@@ -1138,15 +1184,28 @@ static void DrawDroppedWeapons(C_BaseCombatWeapon* weapon)
         if (owner > -1 || (vOrig.x == 0 && vOrig.y == 0 && vOrig.z == 0))
                 return;
 
-        std::string modelName = Util::Items::GetItemDisplayName(*weapon->GetItemDefinitionIndex());
-
-        if (weapon->GetAmmo() > 0)
+	if (Settings::ESP::backend == DrawingBackend::IMGUI)
         {
-                modelName += XORSTR(" | ");
-                modelName += std::to_string(weapon->GetAmmo());
-        }
+		std::string modelName = weapon->GetIcon();
 
-        DrawEntity(weapon, modelName.c_str(), Settings::ESP::weaponColor.Color());
+		float filled = float(weapon->GetAmmo()) / float(weapon->GetCSWpnData()->GetClipSize());
+
+		Vector2D nameSize = {ImGui::weaponFont->ConfigData->SizePixels, 0.f};
+		DrawItemEntity(weapon, modelName.c_str(), Settings::ESP::weaponColor.Color(), nameSize, filled);
+	}
+	else
+	{
+		std::string modelName = Util::Items::GetItemDisplayName(*weapon->GetItemDefinitionIndex());
+
+		if (weapon->GetAmmo() > 0)
+		{
+			modelName += XORSTR(" | ");
+			modelName += std::to_string(weapon->GetAmmo());
+		}
+
+		Vector2D nameSize = Draw::GetTextSize( modelName.c_str(), esp_font );
+		DrawItemEntity(weapon, modelName.c_str(), Settings::ESP::weaponColor.Color(), nameSize);
+	}
 }
 
 static void DrawHostage(C_BaseEntity* hostage)
@@ -1185,45 +1244,98 @@ static void DrawThrowable(C_BaseEntity* throwable, ClientClass* client)
         IMaterial* mats[32];
         modelInfo->GetModelMaterials(nadeModel, hdr->numtextures, mats);
 
-        for (int i = 0; i < hdr->numtextures; i++)
+	Vector2D nameSize;
+
+	if (Settings::ESP::backend == DrawingBackend::IMGUI)
+	{
+		nameSize = { 0.f, -ImGui::weaponFont->ConfigData->SizePixels/2.f };
+		for (int i = 0; i < hdr->numtextures; i++)
+		{
+			IMaterial* mat = mats[i];
+			if (!mat)
+				continue;
+
+			if (strstr(mat->GetName(), XORSTR("flashbang")))
+			{
+				nadeName = XORSTR("i");
+				nadeColor = Settings::ESP::flashbangColor.Color();
+				break;
+			}
+			else if (strstr(mat->GetName(), XORSTR("m67_grenade")) || strstr(mat->GetName(), XORSTR("hegrenade")))
+			{
+				nadeName = XORSTR("j");
+				nadeColor = Settings::ESP::grenadeColor.Color();
+				break;
+			}
+			else if (strstr(mat->GetName(), XORSTR("smoke")))
+			{
+				nadeName = XORSTR("k");
+				nadeColor = Settings::ESP::smokeColor.Color();
+				break;
+			}
+			else if (strstr(mat->GetName(), XORSTR("decoy")))
+			{
+				nadeName = XORSTR("m");
+				nadeColor = Settings::ESP::decoyColor.Color();
+				break;
+			}
+			else if (strstr(mat->GetName(), XORSTR("incendiary")))
+			{
+				nadeName = XORSTR("n");
+				nadeColor = Settings::ESP::molotovColor.Color();
+				break;
+			}
+			else if (strstr(mat->GetName(), XORSTR("molotov")))
+			{
+				nadeName = XORSTR("l");
+				nadeColor = Settings::ESP::molotovColor.Color();
+				break;
+			}
+		}
+	}
+	else
         {
-                IMaterial* mat = mats[i];
-                if (!mat)
-                        continue;
+		for (int i = 0; i < hdr->numtextures; i++)
+		{
+			IMaterial* mat = mats[i];
+			if (!mat)
+				continue;
 
-                if (strstr(mat->GetName(), XORSTR("flashbang")))
-                {
-                        nadeName = XORSTR("Flashbang");
-                        nadeColor = Settings::ESP::flashbangColor.Color();
-                        break;
-                }
-                else if (strstr(mat->GetName(), XORSTR("m67_grenade")) || strstr(mat->GetName(), XORSTR("hegrenade")))
-                {
-                        nadeName = XORSTR("HE Grenade");
-                        nadeColor = Settings::ESP::grenadeColor.Color();
-                        break;
-                }
-                else if (strstr(mat->GetName(), XORSTR("smoke")))
-                {
-                        nadeName = XORSTR("Smoke");
-                        nadeColor = Settings::ESP::smokeColor.Color();
-                        break;
-                }
-                else if (strstr(mat->GetName(), XORSTR("decoy")))
-                {
-                        nadeName = XORSTR("Decoy");
-                        nadeColor = Settings::ESP::decoyColor.Color();
-                        break;
-                }
-                else if (strstr(mat->GetName(), XORSTR("incendiary")) || strstr(mat->GetName(), XORSTR("molotov")))
-                {
-                        nadeName = XORSTR("Molotov");
-                        nadeColor = Settings::ESP::molotovColor.Color();
-                        break;
-                }
-        }
-
-        DrawEntity(throwable, nadeName.c_str(), nadeColor);
+			if (strstr(mat->GetName(), XORSTR("flashbang")))
+			{
+				nadeName = XORSTR("Flashbang");
+				nadeColor = Settings::ESP::flashbangColor.Color();
+				break;
+			}
+			else if (strstr(mat->GetName(), XORSTR("m67_grenade")) || strstr(mat->GetName(), XORSTR("hegrenade")))
+			{
+				nadeName = XORSTR("HE Grenade");
+				nadeColor = Settings::ESP::grenadeColor.Color();
+				break;
+			}
+			else if (strstr(mat->GetName(), XORSTR("smoke")))
+			{
+				nadeName = XORSTR("Smoke");
+				nadeColor = Settings::ESP::smokeColor.Color();
+				break;
+			}
+			else if (strstr(mat->GetName(), XORSTR("decoy")))
+			{
+				nadeName = XORSTR("Decoy");
+				nadeColor = Settings::ESP::decoyColor.Color();
+				break;
+			}
+			else if (strstr(mat->GetName(), XORSTR("incendiary")) || strstr(mat->GetName(), XORSTR("molotov")))
+			{
+				nadeName = XORSTR("Molotov");
+				nadeColor = Settings::ESP::molotovColor.Color();
+				break;
+			}
+		}
+		nameSize = Draw::GetTextSize( nadeName.c_str(), esp_font );
+	}
+	
+        DrawItemEntity(throwable, nadeName.c_str(), nadeColor, nameSize);
 }
 
 static void DrawGlow()
