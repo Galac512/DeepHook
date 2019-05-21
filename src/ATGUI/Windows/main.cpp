@@ -5,14 +5,35 @@
 #include "../../Utils/xorstring.h"
 
 #include "../Tabs/aimbottab.h"
-#include "../Tabs/hvhtab.h"
-#include "../Tabs/misctab.h"
 #include "../Tabs/triggerbottab.h"
 #include "../Tabs/visualstab.h"
+#include "../Tabs/hvhtab.h"
+#include "../Tabs/misctab.h"
+#include "../Tabs/modelstab.h"
+#include "../Tabs/skinstab.h"
+#include "../Tabs/playerlisttab.h"
 
 #include "../../glhook.h"
 
 bool Main::showWindow = true;
+
+static int ModelAndSkinChangerPage = 0;
+void ModelAndSkinChangerTabButtons()
+{
+	const char* tabs[] = {
+		"Models",
+		"Skins",
+	};
+	
+	for (int i = 0; i < IM_ARRAYSIZE(tabs); i++)
+	{
+		if (ImGui::Button(tabs[i], ImVec2(ImGui::GetWindowSize().x / IM_ARRAYSIZE(tabs) - 9, 0)))
+			ModelAndSkinChangerPage = i;
+		
+		if (i < IM_ARRAYSIZE(tabs) - 1)
+			ImGui::SameLine();
+	}
+}
 
 void Main::RenderWindow()
 {
@@ -33,9 +54,9 @@ void Main::RenderWindow()
 		Settings::UI::Windows::Main::open = false;
 		return;
 	}
-
+	
 	static int page = 0;
-
+	
 	if (ImGui::Begin(XORSTR("DeepHook"), &Main::showWindow, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar))
 	{
 		Settings::UI::Windows::Main::open = true;
@@ -45,48 +66,72 @@ void Main::RenderWindow()
 		temp = ImGui::GetWindowPos();
 		Settings::UI::Windows::Main::posX = (int)temp.x;
 		Settings::UI::Windows::Main::posY = (int)temp.y;
-		const char* tabs[] = {
-				"l",
-				"l",
-				"V",
-				"r",
-				"M",
-		};
-
+                const char* tabs[] = {
+                        "A", //Aimbot
+			"H", //Triggerbot
+			"D", //Visuals
+			"C", //HvH
+			"G", //Visuals
+			"I", //Models & Skins Changer
+			"E", //Player list
+                };
+		
 		ImGui::PushFont(ImGui::menuFont);
-		float width = ImGui::GetWindowSize().x / IM_ARRAYSIZE(tabs) - 9;
+		float size = ImGui::GetWindowSize().x / IM_ARRAYSIZE(tabs) - 9;
 		for (int i = 0; i < IM_ARRAYSIZE(tabs); i++)
 		{
-			int distance = i == page ? 0 : i > page ? i - page : page - i;
-
-			if (ImGui::Button(tabs[i], ImVec2(width, width/3.f)))
+			if (ImGui::Button(tabs[i], ImVec2(size, size/2.5f)))
 				page = i;
-
+			
 			if (i < IM_ARRAYSIZE(tabs) - 1)
 				ImGui::SameLine();
 		}
 		ImGui::PopFont();
-
-		ImGui::Separator();
-
+		
 		switch (page)
 		{
+		case 0:
+			Aimbot::RenderTab();
+			break;
+		case 1:
+			Triggerbot::RenderTab();
+			break;
+		case 2:
+			Visuals::RenderTab();
+			break;
+		case 3:
+			HvH::RenderTab();
+			break;
+		case 4:
+			Misc::RenderTab();
+			break;
+		case 5:
+			ModelAndSkinChangerTabButtons();
+			ImGui::Separator();
+			switch (ModelAndSkinChangerPage)
+			{
 			case 0:
-				Aimbot::RenderTab();
+				Models::RenderTab();
 				break;
 			case 1:
-				Triggerbot::RenderTab();
+				Skins::RenderTab();
 				break;
-			case 2:
-				Visuals::RenderTab();
-				break;
-			case 3:
-				HvH::RenderTab();
-				break;
-			case 4:
-				Misc::RenderTab();
-				break;
+			}
+			break;
+		case 6:
+			PlayerList::RenderTab();
+			break;
 		}
 		ImGui::End();
 	}
 }
+
+
+
+
+
+
+
+
+
+

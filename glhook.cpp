@@ -55,8 +55,8 @@ void SDL2::SwapWindow(SDL_Window* window)
                 io.Fonts->AddFontFromMemoryCompressedBase85TTF(Bahnschrift_compressed_data_base85, 18.0f, &config, BahnschriftRegular_ranges);
 
 		// Add icons
-		ImGui::menuFont = io.Fonts->AddFontFromMemoryCompressedTTF(iconMenuFont_compressed_data, iconMenuFont_compressed_size, 30.f);
-		ImGui::weaponFont = io.Fonts->AddFontFromMemoryCompressedTTF(iconWeaponFont_compressed_data, iconWeaponFont_compressed_size, 42.f);
+		ImGui::menuFont = io.Fonts->AddFontFromMemoryCompressedTTF(iconMenuFont_compressed_data, iconMenuFont_compressed_size, 54.f);
+		ImGui::weaponFont = io.Fonts->AddFontFromMemoryCompressedTTF(iconWeaponFont_compressed_data, iconWeaponFont_compressed_size, 30.f);
 
                 // Enable MergeMode and add additional fonts
                 config.MergeMode = true;

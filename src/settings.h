@@ -329,24 +329,6 @@ namespace Settings
                                 extern bool open;
                                 extern bool reload; // True on config load, used to change Window Position.
                         }
-                        namespace Playerlist
-                        {
-                                extern int posX;
-                                extern int posY;
-                                extern int sizeX;
-                                extern int sizeY;
-                                extern bool open;
-                                extern bool reload; // True on config load, used to change Window Position.
-                        }
-                        namespace Skinmodel
-                        {
-                                extern int posX;
-                                extern int posY;
-                                extern int sizeX;
-                                extern int sizeY;
-                                extern bool open;
-                                extern bool reload; // True on config load, used to change Window Position.
-                        }
                         namespace Spectators
                         {
                                 extern int posX;

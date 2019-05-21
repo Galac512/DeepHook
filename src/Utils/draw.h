@@ -23,7 +23,8 @@ enum DrawType
 	DRAW_CIRCLE,
 	DRAW_CIRCLE_FILLED,
 	DRAW_CIRCLE_3D,
-	DRAW_TEXT
+	DRAW_TEXT,
+	DRAW_WEAPON_TEXT,
 };
 struct DrawRequest
 {
@@ -78,7 +79,7 @@ namespace Draw {
 	void ImRectFilled( int x0, int y0, int x1, int y1, ImColor color, float rounding = 0.0f, int rounding_corners_flags = ~0 );
 	void ImRectFilled( ImVec2 a, ImVec2 b, ImColor color, float rounding = 0.0f, int rounding_corners_flags = ~0 );
 	void ImText( ImVec2 pos, ImColor color, const char* text_begin, const char* text_end = nullptr, float wrap_width = 0.0f,
-	    const ImVec4* cpu_fine_clip_rect = nullptr, ImFontFlags flags = ImFontFlags_Outline );
+	    const ImVec4* cpu_fine_clip_rect = nullptr, ImFontFlags flags = ImFontFlags_Outline, ImFont* Font = ImGui::GetFont() );
 	void ImEnd();
 
 	// Functions to Add to DrawRequests
@@ -89,4 +90,5 @@ namespace Draw {
 	void AddCircleFilled( int x0, int y0, float radius, ImColor color, int segments = 12 );
 	void AddCircle3D( const Vector &pos3D, float radius, ImColor color, int segments );
 	void AddText( int x0, int y0, const char *text, ImColor color, ImFontFlags flags = ImFontFlags_Outline );
+	void AddWeaponText( int x0, int y0, const char *text, ImColor color, ImFontFlags flags = ImFontFlags_Outline );
 }

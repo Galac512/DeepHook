@@ -15,6 +15,8 @@
 #include "../Hacks/angleindicator.h"
 #include "../Hacks/watermark.h"
 
+#include "../glhook.h"
+
 #include <mutex>
 
 extern StartDrawingFn StartDrawing;
@@ -73,6 +75,9 @@ void Hooks::Paint(void* thisptr, PaintMode_t mode)
                                 case DRAW_TEXT:
                                         Draw::Text( value.x0, value.y0, value.text, esp_font, Color::FromImColor( value.color ) );
                                         break;
+                                case DRAW_WEAPON_TEXT:
+                                        Draw::Text( value.x0, value.y0, value.text, esp_font, Color::FromImColor( value.color ) );
+                                        break;
                                 }
 #undef value
                         }
@@ -115,7 +120,10 @@ void Hooks::PaintImGui()
                 case DRAW_TEXT:
                         Draw::ImText( ImVec2( value.x0, value.y0 ), value.color, value.text, nullptr, 0.0f, nullptr, value.fontflags );
                         break;
-#undef valule
+                case DRAW_WEAPON_TEXT:
+                        Draw::ImText( ImVec2( value.x0, value.y0 ), value.color, value.text, nullptr, 0.0f, nullptr, value.fontflags, ImGui::weaponFont );
+                        break;
+#undef value
                 }
         }
 }

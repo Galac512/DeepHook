@@ -510,16 +510,16 @@ public:
 		return (ItemDefinitionIndex*)((uintptr_t)this + offsets.DT_BaseAttributableItem.m_iItemDefinitionIndex);
 	}
 
-    bool* GetInitialized()
-    {
-        return (bool*)((uintptr_t)this + offsets.DT_BaseAttributableItem.m_bInitialized);
-    }
-
+	bool* GetInitialized()
+	{
+		return (bool*)((uintptr_t)this + offsets.DT_BaseAttributableItem.m_bInitialized);
+	}
+	
 	int* GetItemIDHigh()
 	{
 		return (int*)((uintptr_t)this + offsets.DT_BaseAttributableItem.m_iItemIDHigh);
 	}
-
+	
 	int* GetEntityQuality()
 	{
 		return (int*)((uintptr_t)this + offsets.DT_BaseAttributableItem.m_iEntityQuality);
@@ -737,6 +737,129 @@ public:
 	void UpdateAccuracyPenalty() {
 		typedef void (* oUpdateAccuracyPenalty)( void* );
 		return getvfunc<oUpdateAccuracyPenalty>( this, 545 )( this );
+	}
+
+	char * GetIcon()
+	{
+		switch (*GetItemDefinitionIndex())
+		{
+		case ItemDefinitionIndex::WEAPON_KNIFE_BAYONET:
+			return (char*)"1";
+		case ItemDefinitionIndex::WEAPON_KNIFE_SURVIVAL_BOWIE:
+			return (char*)"7";
+		case ItemDefinitionIndex::WEAPON_KNIFE_BUTTERFLY:
+			return (char*)"8";
+		case ItemDefinitionIndex::WEAPON_KNIFE:
+			return (char*)"]";
+		case ItemDefinitionIndex::WEAPON_KNIFE_FALCHION:
+			return (char*)"0";
+		case ItemDefinitionIndex::WEAPON_KNIFE_FLIP:
+			return (char*)"2";
+		case ItemDefinitionIndex::WEAPON_KNIFE_GUT:
+			return (char*)"3";
+		case ItemDefinitionIndex::WEAPON_KNIFE_KARAMBIT:
+			return (char*)"4";
+		case ItemDefinitionIndex::WEAPON_KNIFE_M9_BAYONET:
+			return (char*)"5";
+		case ItemDefinitionIndex::WEAPON_KNIFE_T:
+			return (char*)"[";
+		case ItemDefinitionIndex::WEAPON_KNIFE_TACTICAL:
+			return (char*)"6";
+		case ItemDefinitionIndex::WEAPON_KNIFE_PUSH:
+			return (char*)"]";
+		case ItemDefinitionIndex::WEAPON_DEAGLE:
+			return (char*)"A";
+		case ItemDefinitionIndex::WEAPON_ELITE:
+			return (char*)"B";
+		case ItemDefinitionIndex::WEAPON_FIVESEVEN:
+			return (char*)"C";
+		case ItemDefinitionIndex::WEAPON_GLOCK:
+			return (char*)"D";
+		case ItemDefinitionIndex::WEAPON_HKP2000:
+			return (char*)"E";
+		case ItemDefinitionIndex::WEAPON_P250:
+			return (char*)"F";
+		case ItemDefinitionIndex::WEAPON_USP_SILENCER:
+			return (char*)"G";
+		case ItemDefinitionIndex::WEAPON_TEC9:
+			return (char*)"H";
+		case ItemDefinitionIndex::WEAPON_REVOLVER:
+			return (char*)"J";
+		case ItemDefinitionIndex::WEAPON_MAC10:
+			return (char*)"K";
+		case ItemDefinitionIndex::WEAPON_UMP45:
+			return (char*)"L";
+		case ItemDefinitionIndex::WEAPON_BIZON:
+			return (char*)"M";
+		case ItemDefinitionIndex::WEAPON_MP7:
+			return (char*)"N";
+		case ItemDefinitionIndex::WEAPON_MP9:
+			return (char*)"O";
+		case ItemDefinitionIndex::WEAPON_P90:
+			return (char*)"P";
+		case ItemDefinitionIndex::WEAPON_GALILAR:
+			return (char*)"Q";
+		case ItemDefinitionIndex::WEAPON_FAMAS:
+			return (char*)"R";
+		case ItemDefinitionIndex::WEAPON_M4A1_SILENCER:
+			return (char*)"S";
+		case ItemDefinitionIndex::WEAPON_M4A1:
+			return (char*)"T";
+		case ItemDefinitionIndex::WEAPON_AUG:
+			return (char*)"U";
+		case ItemDefinitionIndex::WEAPON_SG556:
+			return (char*)"V";
+		case ItemDefinitionIndex::WEAPON_AK47:
+			return (char*)"W";
+		case ItemDefinitionIndex::WEAPON_G3SG1:
+			return (char*)"X";
+		case ItemDefinitionIndex::WEAPON_SCAR20:
+			return (char*)"Y";
+		case ItemDefinitionIndex::WEAPON_AWP:
+			return (char*)"Z";
+		case ItemDefinitionIndex::WEAPON_SSG08:
+			return (char*)"a";
+		case ItemDefinitionIndex::WEAPON_XM1014:
+			return (char*)"b";
+		case ItemDefinitionIndex::WEAPON_SAWEDOFF:
+			return (char*)"c";
+		case ItemDefinitionIndex::WEAPON_MAG7:
+			return (char*)"d";
+		case ItemDefinitionIndex::WEAPON_NOVA:
+			return (char*)"e";
+		case ItemDefinitionIndex::WEAPON_NEGEV:
+			return (char*)"f";
+		case ItemDefinitionIndex::WEAPON_M249:
+			return (char*)"g";
+		case ItemDefinitionIndex::WEAPON_TASER:
+			return (char*)"h";
+		case ItemDefinitionIndex::WEAPON_FLASHBANG:
+			return (char*)"i";
+		case ItemDefinitionIndex::WEAPON_HEGRENADE:
+			return (char*)"j";
+		case ItemDefinitionIndex::WEAPON_SMOKEGRENADE:
+			return (char*)"k";
+		case ItemDefinitionIndex::WEAPON_MOLOTOV:
+			return (char*)"l";
+		case ItemDefinitionIndex::WEAPON_DECOY:
+			return (char*)"m";
+		case ItemDefinitionIndex::WEAPON_INCGRENADE:
+			return (char*)"n";
+		case ItemDefinitionIndex::WEAPON_C4:
+			return (char*)"o";
+		case ItemDefinitionIndex::WEAPON_CZ75A:
+			return (char*)"I";
+		case ItemDefinitionIndex::WEAPON_KNIFE_URSUS:
+			return (char*)"]";
+		case ItemDefinitionIndex::WEAPON_KNIFE_GYPSY_JACKKNIFE:
+			return (char*)"]";
+		case ItemDefinitionIndex::WEAPON_KNIFE_STILETTO:
+			return (char*)"]";
+		case ItemDefinitionIndex::WEAPON_KNIFE_WIDOWMAKER:
+			return (char*)"]";
+		default:
+			return (char*)"  ";
+		}
 	}
 };
 

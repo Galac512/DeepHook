@@ -9,6 +9,7 @@
 #include "../ImGUI/imgui_internal.h"
 #include "../Hacks/esp.h"
 
+
 DrawingBackend Settings::ESP::backend = DrawingBackend::IMGUI;
 
 std::deque<DrawRequest> Draw::drawRequests = {};
@@ -170,28 +171,28 @@ void Draw::ImStart() {
 }
 
 void Draw::ImText( ImVec2 pos, ImColor color, const char* text_begin, const char* text_end, float wrap_width,
-				   const ImVec4* cpu_fine_clip_rect, ImFontFlags flags ) {
+    const ImVec4* cpu_fine_clip_rect, ImFontFlags flags, ImFont* Font ) {
 	if ( flags & ImFontFlags_Outline ) {
-		ImGui::GetWindowDrawList()->AddText( ImGui::GetFont(), ImGui::GetFontSize(), ImVec2( pos.x - 1, pos.y - 1 ),
+		ImGui::GetWindowDrawList()->AddText( Font, ImGui::GetFontSize(), ImVec2( pos.x - 1, pos.y - 1 ),
 											 ImColor( 0, 0, 0, 255 ), text_begin, text_end, wrap_width,
 											 cpu_fine_clip_rect );
-		ImGui::GetWindowDrawList()->AddText( ImGui::GetFont(), ImGui::GetFontSize(), ImVec2( pos.x + 2, pos.y ),
+		ImGui::GetWindowDrawList()->AddText( Font, ImGui::GetFontSize(), ImVec2( pos.x + 2, pos.y ),
 											 ImColor( 0, 0, 0, 255 ), text_begin, text_end, wrap_width,
 											 cpu_fine_clip_rect );
-		ImGui::GetWindowDrawList()->AddText( ImGui::GetFont(), ImGui::GetFontSize(), ImVec2( pos.x, pos.y + 2 ),
+		ImGui::GetWindowDrawList()->AddText( Font, ImGui::GetFontSize(), ImVec2( pos.x, pos.y + 2 ),
 											 ImColor( 0, 0, 0, 255 ), text_begin, text_end, wrap_width,
 											 cpu_fine_clip_rect );
-		ImGui::GetWindowDrawList()->AddText( ImGui::GetFont(), ImGui::GetFontSize(), ImVec2( pos.x - 2, pos.y ),
+		ImGui::GetWindowDrawList()->AddText( Font, ImGui::GetFontSize(), ImVec2( pos.x - 2, pos.y ),
 											 ImColor( 0, 0, 0, 255 ), text_begin, text_end, wrap_width,
 											 cpu_fine_clip_rect );
 	}
 
 	if ( flags & ImFontFlags_Shadow )
-		ImGui::GetWindowDrawList()->AddText( ImGui::GetFont(), ImGui::GetFontSize(), ImVec2( pos.x + 1, pos.y + 1 ),
+		ImGui::GetWindowDrawList()->AddText( Font, ImGui::GetFontSize(), ImVec2( pos.x + 1, pos.y + 1 ),
 											 ImColor( 0, 0, 0, 255 ), text_begin, text_end, wrap_width,
 											 cpu_fine_clip_rect );
 
-	ImGui::GetWindowDrawList()->AddText( ImGui::GetFont(), ImGui::GetFontSize(), pos, color, text_begin, text_end,
+	ImGui::GetWindowDrawList()->AddText( Font, ImGui::GetFontSize(), pos, color, text_begin, text_end,
 										 wrap_width, cpu_fine_clip_rect );
 }
 
@@ -322,6 +323,22 @@ void Draw::AddText( int x0, int y0, const char *text, ImColor color, ImFontFlags
         req.text[sizeof(req.text) - 1] = '\0';
     }
     req.type = DRAW_TEXT;
+    req.x0 = x0;
+    req.y0 = y0;
+    req.color = color;
+    req.fontflags = flags;
+
+    drawRequests.push_back( req );
+}
+
+void Draw::AddWeaponText( int x0, int y0, const char *text, ImColor color, ImFontFlags flags )
+{
+    DrawRequest req = {};
+    if( text ){
+        strncpy( req.text, text, sizeof( req.text ) );
+        req.text[sizeof(req.text) - 1] = '\0';
+    }
+    req.type = DRAW_WEAPON_TEXT;
     req.x0 = x0;
     req.y0 = y0;
     req.color = color;

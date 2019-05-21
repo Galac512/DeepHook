@@ -19,6 +19,6 @@ static HFont CreateFont( const char* fontName, int size, int flag ) {
 void Fonts::SetupFonts()
 {
 	esp_font = CreateFont(Settings::UI::Fonts::ESP::family,
-								Settings::UI::Fonts::ESP::size,
-								Settings::UI::Fonts::ESP::flags);
+	    Settings::UI::Fonts::ESP::size,
+	    Settings::UI::Fonts::ESP::flags);
 }

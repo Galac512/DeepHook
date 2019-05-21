@@ -10,6 +10,7 @@
 #include "../Utils/entity.h"
 #include "../Utils/xorstring.h"
 #include "../Hooks/hooks.h"
+#include "../glhook.h"
 
 #include "../ATGUI/texture.h"
 #include "../Resources/tux.h"
@@ -928,13 +929,22 @@ static void DrawPlayerText( C_BasePlayer* player, int x, int y, int w, int h ) {
 
         // weapon
         C_BaseCombatWeapon* activeWeapon = ( C_BaseCombatWeapon* ) entityList->GetClientEntityFromHandle( player->GetActiveWeapon() );
-        if ( Settings::ESP::Info::weapon && activeWeapon ) {
-                std::string modelName = Util::Items::GetItemDisplayName( *activeWeapon->GetItemDefinitionIndex() );
+        if ( Settings::ESP::Info::weapon && activeWeapon )
+	{
                 int offset = ( int ) ( Settings::ESP::Bars::type == BarType::HORIZONTAL );
-
-                Vector2D weaponTextSize = Draw::GetTextSize( modelName.c_str(), esp_font );
-                Draw::AddText( ( x + ( w / 2 ) - ( weaponTextSize.x / 2 ) ), y + h + offset, modelName.c_str(), ImColor( 255, 255, 255, 255 ) );
-        }
+		if (Settings::ESP::backend == DrawingBackend::IMGUI)
+                {
+			std::string modelName = activeWeapon->GetIcon();
+			Draw::AddWeaponText((x + (w / 2) - (ImGui::weaponFont->ConfigData->SizePixels / 2)), y + h + offset, modelName.c_str(), ImColor(255, 255, 255, 255));
+		}
+		else
+		{
+			std::string modelName = Util::Items::GetItemDisplayName( *activeWeapon->GetItemDefinitionIndex() );
+	
+			Vector2D weaponTextSize = Draw::GetTextSize( modelName.c_str(), esp_font );
+			Draw::AddWeaponText( ( x + ( w / 2 ) - ( weaponTextSize.x / 2 ) ), y + h + offset, modelName.c_str(), ImColor( 255, 255, 255, 255 ) );
+		}
+	}
         // draw info
         std::vector<std::string> stringsToShow;
 
@@ -993,7 +1003,7 @@ static void DrawPrediction( C_BasePlayer* player )
 		if ( Settings::ESP::Filters::visibilityCheck || Settings::ESP::Filters::legit )
 			bIsVisible = Entity::IsVisible( player, ( int ) Bone::BONE_HEAD, 180.f, Settings::ESP::Filters::smokeCheck );
 
-		//if (bIsVisible)
+		if (bIsVisible)
 			Draw::AddCircleFilled( head2D.x, head2D.y, 5.f, ImColor(255, 255, 255, 255), 4 );
 	}
 }
