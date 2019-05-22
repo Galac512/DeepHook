@@ -584,7 +584,7 @@ static void DrawItemEntity( C_BaseEntity* entity, const char* string, ImColor co
 		DrawBox( color, x, y, w, h, entity );
         Draw::AddItemText(( int ) ( x + ( w / 2 ) - ( nameSize.x / 2 ) ), y + h + 2, string, color );
 
-	if (fillPercent > 0.f)
+	if (fillPercent >= 0.f)
 	{
 		x = x + w/2 - 40;
 		y = y + h + 24;
