@@ -984,7 +984,7 @@ static void DrawPlayerText( C_BasePlayer* player, int x, int y, int w, int h )
 	if (Settings::ESP::Info::money)
 	{
 		char money[6];
-		sprintf(money, "%d", player->GetMoney());
+		sprintf(money, "$%d", player->GetMoney());
 		stringsToShow.push_back(money);
 	}
 
