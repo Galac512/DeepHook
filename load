@@ -44,7 +44,8 @@ echo "Injecting Build ID: $filename"
 # https://www.kernel.org/doc/Documentation/security/Yama.txt
 echo "2" |  tee /proc/sys/kernel/yama/ptrace_scope # Only allows root to inject code. This is temporary until reboot.
 
- cp "$filename" "/usr/lib/${filename}"
+
+cp "$filename" "/usr/lib/${filename}"
 
  killall -19 steam
  killall -19 steamwebhelper

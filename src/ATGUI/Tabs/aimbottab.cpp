@@ -63,6 +63,7 @@ static bool autoAimRealDistance = false;
 static bool autoSlow = false;
 static bool predEnabled = false;
 static int predAmount = 8;
+static bool scopeControlEnabled = false;
 
 void UI::ReloadWeaponSettings()
 {
@@ -118,6 +119,7 @@ void UI::ReloadWeaponSettings()
 	autoSlow = Settings::Aimbot::weapons.at(index).autoSlow;
 	predEnabled = Settings::Aimbot::weapons.at(index).predEnabled;
 	predAmount  = Settings::Aimbot::weapons.at(index).predAmount;
+	scopeControlEnabled = Settings::Aimbot::weapons.at(index).scopeControlEnabled;
 
 	curveValue[0] = Settings::Aimbot::weapons.at(index).curveValue[0];
 	curveValue[1] = Settings::Aimbot::weapons.at(index).curveValue[1];
@@ -163,6 +165,7 @@ void UI::UpdateWeaponSettings()
 		.autoAimRealDistance = autoAimRealDistance,
 		.autoSlow = autoSlow,
 		.predEnabled = predEnabled,
+		.scopeControlEnabled = scopeControlEnabled,
 		.predAmount = predAmount,
 
 		.engageLockTTR = engageLockTTR,
@@ -526,9 +529,9 @@ void Aimbot::RenderTab()
 
 				if (ImGui::Checkbox(XORSTR("Silent Aim"), &silent))
 					UI::UpdateWeaponSettings();
-				if (ImGui::Checkbox(XORSTR("Smoke Check"), &smokeCheck))
-					UI::UpdateWeaponSettings();
 				if (ImGui::Checkbox(XORSTR("Prediction"), &predEnabled))
+					UI::UpdateWeaponSettings();
+				if (ImGui::Checkbox(XORSTR("Smoke Check"), &smokeCheck))
 					UI::UpdateWeaponSettings();
 				if (ImGui::Checkbox(XORSTR("Ignore Jump (Self)"), &ignoreJumpEnabled))
 					UI::UpdateWeaponSettings();
@@ -538,6 +541,8 @@ void Aimbot::RenderTab()
 			ImGui::NextColumn();
 			{
 				if (ImGui::Checkbox(XORSTR("No Shoot"), &noShootEnabled))
+					UI::UpdateWeaponSettings();
+				if (ImGui::SliderInt(XORSTR("Amount"), &predAmount, 1, 16))
 					UI::UpdateWeaponSettings();
 				switch (currentWeapon)
 				{
@@ -555,11 +560,11 @@ void Aimbot::RenderTab()
 					default:
 						if (ImGui::Checkbox(XORSTR("Auto Scope"), &autoScopeEnabled))
 							UI::UpdateWeaponSettings();
+						if (ImGui::Checkbox(XORSTR("Scope Control"), &scopeControlEnabled))
+							UI::UpdateWeaponSettings();
 				}
 
 				if (ImGui::Checkbox(XORSTR("Flash Check"), &flashCheck))
-					UI::UpdateWeaponSettings();
-				if (ImGui::SliderInt(XORSTR("Amount"), &predAmount, 1, 16))
 					UI::UpdateWeaponSettings();
 				if (ImGui::Checkbox(XORSTR("Ignore Jump (Enemies)"), &ignoreEnemyJumpEnabled))
 					UI::UpdateWeaponSettings();

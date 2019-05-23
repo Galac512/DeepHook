@@ -213,6 +213,7 @@ void Settings::LoadDefaultsOrSave(std::string path)
                 weaponSetting[XORSTR("AutoSlow")][XORSTR("Enabled")] = i.second.autoSlow;
                 weaponSetting[XORSTR("Prediction")][XORSTR("Enabled")] = i.second.predEnabled;
                 weaponSetting[XORSTR("Prediction")][XORSTR("Amount")] = i.second.predAmount;
+		weaponSetting[XORSTR("ScopeControl")][XORSTR("Enabled")] = i.second.scopeControlEnabled;
 
                 for (int bone = (int) DesiredBones::BONE_PELVIS; bone <= (int) DesiredBones::BONE_RIGHT_SOLE; bone++)
                         weaponSetting[XORSTR("DesiredBones")][XORSTR("Bones")][bone] = i.second.desiredBones[bone];
@@ -662,6 +663,7 @@ void Settings::LoadConfig(std::string path)
                         autoAimRealDistance : weaponSetting[XORSTR( "AutoAim" )][XORSTR( "RealDistance" )].asBool(),
                         autoSlow : weaponSetting[XORSTR( "AutoSlow" )][XORSTR( "enabled" )].asBool(),
                         predEnabled : weaponSetting[XORSTR( "Prediction" )][XORSTR( "enabled" )].asBool(),
+			scopeControlEnabled : weaponSetting[XORSTR( "ScopeControl" )][XORSTR( "Enabled" )].asBool(),
                         predAmount : weaponSetting[XORSTR( "Prediction" )][XORSTR( "amount" )].asInt(),
                         engageLockTTR : weaponSetting[XORSTR( "engageLockTTR" )].asInt(),
                         bone : (Bone) weaponSetting[XORSTR( "TargetBone" )].asInt(),
@@ -686,7 +688,7 @@ void Settings::LoadConfig(std::string path)
                 weapon.curveValue[0] = weaponSetting[XORSTR( "Curve" )][XORSTR( "Value" )][0].asFloat();
                 weapon.curveValue[1] = weaponSetting[XORSTR( "Curve" )][XORSTR( "Value" )][1].asFloat();
                 weapon.curveValue[2] = weaponSetting[XORSTR( "Curve" )][XORSTR( "Value" )][2].asFloat();
-                weapon./urveValue[3] = weaponSetting[XORSTR( "Curve" )][XORSTR( "Value" )][3].asFloat();
+                weapon.curveValue[3] = weaponSetting[XORSTR( "Curve" )][XORSTR( "Value" )][3].asFloat();
 
                 for (int bone = (int) DesiredBones::BONE_PELVIS; bone <= (int) DesiredBones::BONE_RIGHT_SOLE; bone++)
                         weapon.desiredBones[bone] = weaponSetting[XORSTR("DesiredBones")][XORSTR("Bones")][bone].asBool();

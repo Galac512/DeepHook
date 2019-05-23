@@ -172,7 +172,8 @@ struct AimbotWeapon_t
 		autoWallEnabled,
 		autoAimRealDistance,
 		autoSlow,
-		predEnabled;
+		predEnabled,
+		scopeControlEnabled;
 	int predAmount = 8,
 		engageLockTTR = 700;
 	Bone bone = Bone::BONE_HEAD;
@@ -254,7 +255,8 @@ struct AimbotWeapon_t
 		    this->autoSlow == another.autoSlow &&
 		    this->predEnabled == another.predEnabled &&
 		    this->predAmount == another.predAmount &&
-		    this->autoAimRealDistance == another.autoAimRealDistance;
+		    this->autoAimRealDistance == another.autoAimRealDistance &&
+		    this->scopeControlEnabled == another.scopeControlEnabled;
 	}
 } const defaultSettings{};
 
@@ -491,6 +493,11 @@ namespace Settings
                         extern bool enabled;
 			extern int amount;
                 }
+
+		namespace ScopeControl
+		{
+			extern bool enabled;
+		}
 
                 extern std::unordered_map<ItemDefinitionIndex, AimbotWeapon_t, Util::IntHash<ItemDefinitionIndex>> weapons;
         }
