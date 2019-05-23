@@ -334,18 +334,29 @@ void Misc::RenderTab()
                 {
                         ImGui::Text(XORSTR("Clantag"));
                         ImGui::Separator();
-                        ImGui::Checkbox(XORSTR("Enabled"), &Settings::ClanTagChanger::enabled);
-                        ImGui::Separator();
                         ImGui::Columns(2, nullptr, false);
                         {
                                 ImGui::PushItemWidth(-1);
-                                if (ImGui::InputText(XORSTR("##CLANTAG"), Settings::ClanTagChanger::value, 30))
-                                        ClanTagChanger::UpdateClanTagCallback();
-                                ImGui::PopItemWidth();
+				ImGui::Checkbox(XORSTR("Enabled"), &Settings::ClanTagChanger::enabled);
+				ImGui::PopItemWidth();
+			}
+			ImGui::NextColumn();
+			{
+				ImGui::PushItemWidth(-1);
+				if (ImGui::Button(XORSTR("Update Clantag"), ImVec2(-1, 0)))
+					ClanTagChanger::UpdateClanTagCallback();
+				ImGui::PopItemWidth();
+			}
+			ImGui::Columns(1);
+			ImGui::Separator();
+			ImGui::Columns(2, nullptr, true);
+			{
+				ImGui::PushItemWidth(-1);
+				ImGui::InputText(XORSTR("##CLANTAG"), Settings::ClanTagChanger::value, 30);
+				ImGui::PopItemWidth();
 
-                                ImGui::ItemSize(ImVec2(0.0f, 0.0f), 0.0f);
-                                ImGui::Text(XORSTR("Animation Speed"));
-                        }
+				ImGui::ItemSize(ImVec2(0.0f, 0.0f), 0.0f);
+				ImGui::Text(XORSTR("Animation Speed"));                        }
                         ImGui::NextColumn();
                         {
                                 ImGui::PushItemWidth(-1);
