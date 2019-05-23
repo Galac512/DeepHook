@@ -45,6 +45,7 @@ ColorVar Settings::ESP::decoyColor = ImColor(2255, 152, 0, 255);
 ColorVar Settings::ESP::flashbangColor = ImColor(255, 235, 59, 255);
 ColorVar Settings::ESP::grenadeColor = ImColor(244, 67, 54, 255);
 ColorVar Settings::ESP::molotovColor = ImColor(205, 32, 31, 255);
+ColorVar Settings::ESP::infoColor = ImColor(255, 255, 255, 255);
 ColorVar Settings::ESP::Skeleton::color = ImColor(255, 255, 255, 255);
 ColorVar Settings::ESP::Spread::color = ImColor(15, 200, 45, 255);
 ColorVar Settings::ESP::Spread::spreadLimitColor = ImColor(20, 5, 150, 255);
@@ -85,6 +86,7 @@ bool Settings::ESP::Info::defusing = false;
 bool Settings::ESP::Info::grabbingHostage = false;
 bool Settings::ESP::Info::rescuing = false;
 bool Settings::ESP::Info::location = false;
+bool Settings::ESP::Info::money = false;
 bool Settings::ESP::Boxes::enabled = false;
 BoxType Settings::ESP::Boxes::type = BoxType::FRAME_2D;
 bool Settings::ESP::Sprite::enabled = false;
@@ -929,7 +931,7 @@ static void DrawPlayerText( C_BasePlayer* player, int x, int y, int w, int h )
                         displayString += playerInfo.name;
 
                 Vector2D nameSize = Draw::GetTextSize( displayString.c_str(), esp_font );
-                Draw::AddText( x + ( w / 2 ) - ( nameSize.x / 2 ), ( y - textSize.y - nameOffset ), displayString.c_str(), ImColor( 255, 255, 255, 255 ) );
+		Draw::AddText( x + ( w / 2 ) - ( nameSize.x / 2 ), ( y - textSize.y - nameOffset ), displayString.c_str(), Settings::ESP::infoColor.Color() );
                 lineNum++;
         }
 
@@ -938,7 +940,7 @@ static void DrawPlayerText( C_BasePlayer* player, int x, int y, int w, int h )
                 IEngineClient::player_info_t playerInfo;
                 engine->GetPlayerInfo( player->GetIndex(), &playerInfo );
                 Vector2D rankSize = Draw::GetTextSize( playerInfo.guid, esp_font );
-                Draw::AddText( ( x + ( w / 2 ) - ( rankSize.x / 2 ) ),( y - ( textSize.y * lineNum ) - nameOffset ), playerInfo.guid, ImColor( 255, 255, 255, 255 ) );
+		Draw::AddText( ( x + ( w / 2 ) - ( rankSize.x / 2 ) ),( y - ( textSize.y * lineNum ) - nameOffset ), playerInfo.guid, Settings::ESP::infoColor.Color() );
                 lineNum++;
         }
 
@@ -948,14 +950,14 @@ static void DrawPlayerText( C_BasePlayer* player, int x, int y, int w, int h )
 
                 if ( rank >= 0 && rank < 19 ) {
                         Vector2D rankSize = Draw::GetTextSize( ESP::ranks[rank], esp_font );
-                        Draw::AddText( ( x + ( w / 2 ) - ( rankSize.x / 2 ) ), ( y - ( textSize.y * lineNum ) - nameOffset ), ESP::ranks[rank], ImColor( 255, 255, 255, 255 ) );
+			Draw::AddText( ( x + ( w / 2 ) - ( rankSize.x / 2 ) ), ( y - ( textSize.y * lineNum ) - nameOffset ), ESP::ranks[rank], Settings::ESP::infoColor.Color() );
                 }
         }
 
         // health
         if ( Settings::ESP::Info::health ) {
                 std::string buf = std::to_string( player->GetHealth() ) + XORSTR( " HP" );
-                Draw::AddText( x + w + boxSpacing, ( y + h - textSize.y ), buf.c_str(), ImColor( 255, 255, 255, 255 ) );
+		Draw::AddText( x + w + boxSpacing, ( y + h - textSize.y ), buf.c_str(), Settings::ESP::infoColor.Color() );
         }
 
         // weapon
@@ -966,18 +968,25 @@ static void DrawPlayerText( C_BasePlayer* player, int x, int y, int w, int h )
 		if (Settings::ESP::backend == DrawingBackend::IMGUI)
                 {
 			std::string modelName = activeWeapon->GetIcon();
-			Draw::AddItemText((x + (w / 2) - (ImGui::weaponFont->ConfigData->SizePixels / 2)), y + h + offset, modelName.c_str(), ImColor(255, 255, 255, 255));
+			Draw::AddItemText((x + (w / 2) - (ImGui::weaponFont->ConfigData->SizePixels / 2)), y + h + offset, modelName.c_str(), Settings::ESP::infoColor.Color());
 		}
 		else
 		{
 			std::string modelName = Util::Items::GetItemDisplayName( *activeWeapon->GetItemDefinitionIndex() );
 	
 			Vector2D weaponTextSize = Draw::GetTextSize( modelName.c_str(), esp_font );
-			Draw::AddItemText( ( x + ( w / 2 ) - ( weaponTextSize.x / 2 ) ), y + h + offset, modelName.c_str(), ImColor( 255, 255, 255, 255 ) );
+			Draw::AddText( ( x + ( w / 2 ) - ( weaponTextSize.x / 2 ) ), y + h + offset, modelName.c_str(), Settings::ESP::infoColor.Color() );
 		}
 	}
         // draw info
         std::vector<std::string> stringsToShow;
+
+	if (Settings::ESP::Info::money)
+	{
+		char money[6];
+		sprintf(money, "%d", player->GetMoney());
+		stringsToShow.push_back(money);
+	}
 
         if ( Settings::ESP::Info::scoped && player->IsScoped() )
                 stringsToShow.push_back( XORSTR( "Scoped" ) );
@@ -1016,7 +1025,7 @@ static void DrawPlayerText( C_BasePlayer* player, int x, int y, int w, int h )
 
         for( unsigned int i = 0; i < stringsToShow.size(); i++ )
 	{
-                Draw::AddText( x + w + boxSpacing, ( y + ( i * ( textSize.y + 2 ) ) ), stringsToShow[i].c_str(), ImColor( 255, 255, 255, 255 ) );
+		Draw::AddText( x + w + boxSpacing, ( y + ( i * ( textSize.y + 2 ) ) ), stringsToShow[i].c_str(), Settings::ESP::infoColor.Color() );
         }
 }
 
