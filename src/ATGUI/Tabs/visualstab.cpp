@@ -20,6 +20,7 @@ void Visuals::RenderTab()
         const char* ArmsTypes[] = { "Default", "Wireframe", "None" };
 	const char* WeaponTypes[] = { "Default", "Wireframe", "None" };
 <<<<<<< HEAD
+<<<<<<< HEAD
 	const char* SmokeTypes[] = { "Wireframe", "None" };
 	const char* Sounds[] = { "None", "SpongeBob", "Half life", "Half life 2", "Half life 3", "Half life 4", "BB Gun Bell", "Dopamine", "Wub", "Pedo Yes!", "Meme", "Error", "Orchestral" };
         const char* SkyBoxes[] = {
@@ -73,6 +74,8 @@ void Visuals::RenderTab()
                 ImGui::Checkbox(XORSTR("Enabled"), &Settings::ESP::enabled);
                 ImGui::Combo( XORSTR( "##BACKENDTYPE" ), (int*)&Settings::ESP::backend, BackendTypes, IM_ARRAYSIZE( BackendTypes ) );
 =======
+=======
+>>>>>>> da6adea5... Add hitmarker sounds
     const char* Sounds[] = { "None", "SpongeBob", "Half life", "Half life 2", "Half life 3", "Half life 4", "BB Gun Bell", "Dopamine", "Wub", "Pedo Yes!", "Meme", "Error", "Orchestral" };
 	const char* SkyBoxes[] = {
 			"cs_baggage_skybox_", // 0
@@ -535,9 +538,15 @@ void Visuals::RenderTab()
 				ImGui::Checkbox(XORSTR("Enemies##HITMARKERS"), &Settings::ESP::Hitmarker::enemies);
 				ImGui::Checkbox(XORSTR("Allies##HITMARKERS"), &Settings::ESP::Hitmarker::allies);
 <<<<<<< HEAD
+<<<<<<< HEAD
 				ImGui::Checkbox(XORSTR("Sounds##HITMARKERS"), &Settings::ESP::Hitmarker::Sounds::enabled);
 				ImGui::Checkbox(XORSTR("Damage##HITMARKERS"), &Settings::ESP::Hitmarker::Damage::enabled);
 			}
+=======
+                ImGui::Checkbox(XORSTR("Sounds##HITMARKERS"), &Settings::ESP::Hitmarker::Sounds::enabled);
+                ImGui::Checkbox(XORSTR("Damage##HITMARKERS"), &Settings::ESP::Hitmarker::Damage::enabled);
+            }
+>>>>>>> da6adea5... Add hitmarker sounds
 			ImGui::NextColumn();
                         {
                                 ImGui::PushItemWidth(-1);
