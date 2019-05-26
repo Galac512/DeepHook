@@ -90,6 +90,24 @@ enum class Sound : int {
 
 };
 
+enum class Sound : int {
+
+	NONE,
+	SPONGEBOB,
+	HALFLIFE,
+	HALFLIFE2,
+	HALFLIFE3,
+	HALFLIFE4,
+	BBGUNBELL,
+	DOPAMINE,
+	WUB,
+	PEDOYES,
+	MEME,
+	ERROR,
+	ORCHESTRAL,
+
+};
+
 enum class BarType : int
 {
         VERTICAL,
@@ -795,6 +813,7 @@ namespace Settings
 				extern bool enabled;
 				extern Sound sound;
 			}
+<<<<<<< HEAD
                 }
 
                 namespace HeadDot
@@ -812,6 +831,15 @@ namespace Settings
                 }
 
 		namespace ShowPrediction
+=======
+			namespace Sounds {
+				extern bool enabled;
+				extern Sound sound;
+			}
+		}
+
+		namespace HeadDot
+>>>>>>> da6adea5... Add hitmarker sounds
 		{
 			extern bool enabled;
 		}

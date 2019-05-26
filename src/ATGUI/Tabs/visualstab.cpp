@@ -19,6 +19,7 @@ void Visuals::RenderTab()
         const char* ChamsTypes[] = { "Normal", "Normal - XQZ", "Flat", "Flat - XQZ" };
         const char* ArmsTypes[] = { "Default", "Wireframe", "None" };
 	const char* WeaponTypes[] = { "Default", "Wireframe", "None" };
+<<<<<<< HEAD
 	const char* SmokeTypes[] = { "Wireframe", "None" };
 	const char* Sounds[] = { "None", "SpongeBob", "Half life", "Half life 2", "Half life 3", "Half life 4", "BB Gun Bell", "Dopamine", "Wub", "Pedo Yes!", "Meme", "Error", "Orchestral" };
         const char* SkyBoxes[] = {
@@ -71,6 +72,54 @@ void Visuals::RenderTab()
         {
                 ImGui::Checkbox(XORSTR("Enabled"), &Settings::ESP::enabled);
                 ImGui::Combo( XORSTR( "##BACKENDTYPE" ), (int*)&Settings::ESP::backend, BackendTypes, IM_ARRAYSIZE( BackendTypes ) );
+=======
+    const char* Sounds[] = { "None", "SpongeBob", "Half life", "Half life 2", "Half life 3", "Half life 4", "BB Gun Bell", "Dopamine", "Wub", "Pedo Yes!", "Meme", "Error", "Orchestral" };
+	const char* SkyBoxes[] = {
+			"cs_baggage_skybox_", // 0
+			"cs_tibet",
+			"embassy",
+			"italy",
+			"jungle",
+			"office",
+			"nukeblank",
+			"sky_venice",
+			"sky_cs15_daylight01_hdr",
+			"sky_cs15_daylight02_hdr",
+			"sky_cs15_daylight03_hdr",
+			"sky_cs15_daylight04_hdr",
+			"sky_csgo_cloudy01",
+			"sky_csgo_night_flat",
+			"sky_csgo_night02",
+			"sky_csgo_night02b",
+			"sky_day02_05",
+			"sky_day02_05_hdr",
+			"sky_dust",
+			"vertigo",
+			"vertigo_hdr",
+			"vertigoblue_hdr",
+			"vietnam" // 21
+	};
+	const char *tracerEffectNames[] = {
+			"Assault Rifle", // 0
+			"Pistol",
+			"SMG",
+			"Rifle",
+			"Kisak Snot",
+			"Machine Gun",
+			"Shotgun",
+			"Kisak Snot Fallback",
+			"Kisak Snot Fallback2",
+			"Wire1A",
+			"Wire2",
+			"Wire1B",
+			"Original",
+			"Backup",
+			".50 Cal",
+			".50 Cal Glow",
+			".50 Cal Low",
+			".50 Cal Low Glow", // 17
+	};
+>>>>>>> da6adea5... Add hitmarker sounds
 
                 ImGui::NextColumn();
                 ImGui::Text(XORSTR("Only on Key"));
@@ -485,6 +534,7 @@ void Visuals::RenderTab()
 
 				ImGui::Checkbox(XORSTR("Enemies##HITMARKERS"), &Settings::ESP::Hitmarker::enemies);
 				ImGui::Checkbox(XORSTR("Allies##HITMARKERS"), &Settings::ESP::Hitmarker::allies);
+<<<<<<< HEAD
 				ImGui::Checkbox(XORSTR("Sounds##HITMARKERS"), &Settings::ESP::Hitmarker::Sounds::enabled);
 				ImGui::Checkbox(XORSTR("Damage##HITMARKERS"), &Settings::ESP::Hitmarker::Damage::enabled);
 			}
@@ -499,6 +549,22 @@ void Visuals::RenderTab()
                         }
                         ImGui::Columns(1);
                         ImGui::Separator();
+=======
+                ImGui::Checkbox(XORSTR("Sounds##HITMARKERS"), &Settings::ESP::Hitmarker::Sounds::enabled);
+                ImGui::Checkbox(XORSTR("Damage##HITMARKERS"), &Settings::ESP::Hitmarker::Damage::enabled);
+            }
+			ImGui::NextColumn();
+			{
+				ImGui::PushItemWidth(-1);
+				ImGui::SliderInt(XORSTR("##HITMARKERDUR"), &Settings::ESP::Hitmarker::duration, 250, 3000, XORSTR("Timeout: %0.f"));
+				ImGui::SliderInt(XORSTR("##HITMARKERSIZE"), &Settings::ESP::Hitmarker::size, 1, 32, XORSTR("Size: %0.f"));
+				ImGui::SliderInt(XORSTR("##HITMARKERGAP"), &Settings::ESP::Hitmarker::innerGap, 1, 16, XORSTR("Gap: %0.f"));
+                ImGui::Combo( XORSTR ( "Sounds##HITMARKERCOMBO" ), ( int* ) &Settings::ESP::Hitmarker::Sounds::sound, Sounds, IM_ARRAYSIZE( Sounds ) );
+                ImGui::PopItemWidth();
+			}
+			ImGui::Columns(1);
+			ImGui::Separator();
+>>>>>>> da6adea5... Add hitmarker sounds
 
                         ImGui::EndChild();
                 }
