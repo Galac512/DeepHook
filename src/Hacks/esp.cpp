@@ -404,6 +404,7 @@ bool ESP::WorldToScreen( const Vector &origin, ImVec2 * const screen ) {
         if ( w < 0.01f ) // Is Not in front of our player
                 return false;
 
+<<<<<<< HEAD
 	static int iWidth = 0;
 	static int iHeight = 0;
 	static float width;
@@ -431,6 +432,28 @@ bool ESP::WorldToScreen( const Vector &origin, ImVec2 * const screen ) {
                     vMatrix[1][2] * origin.z +
                     vMatrix[1][3]) * inverseW) * height + 0.5f);
         return true;
+=======
+	float width = (float)Paint::engineWidth;
+	float height = (float)Paint::engineHeight;
+
+	float halfWidth = width / 2;
+	float halfHeight = height / 2;
+
+	float inverseW = 1 / w;
+
+	screen->x = halfWidth +
+				(0.5f * ((vMatrix[0][0] * origin.x +
+						  vMatrix[0][1] * origin.y +
+						  vMatrix[0][2] * origin.z +
+						  vMatrix[0][3]) * inverseW) * width + 0.5f);
+
+	screen->y = halfHeight -
+				(0.5f * ((vMatrix[1][0] * origin.x +
+						  vMatrix[1][1] * origin.y +
+						  vMatrix[1][2] * origin.z +
+						  vMatrix[1][3]) * inverseW) * height + 0.5f);
+	return true;
+>>>>>>> de939c12... Support for stretched resolution - also no need to reinject when changing csgo resolution
 }
 
 static void DrawBox( ImColor color, int x, int y, int w, int h, C_BaseEntity* entity )
@@ -712,6 +735,7 @@ static void DrawTracer( C_BasePlayer* player )
         Vector src;
         src3D = player->GetVecOrigin() - Vector( 0, 0, 0 );
 
+<<<<<<< HEAD
         if ( debugOverlay->ScreenPosition( src3D, src ) )
                 return;
 
@@ -720,14 +744,39 @@ static void DrawTracer( C_BasePlayer* player )
 
         int x = screenWidth / 2;
         int y = 0;
+=======
+	int x = Paint::engineWidth / 2;
+	int y = 0;
+
+	if ( Settings::ESP::Tracers::type == TracerType::CURSOR )
+		y = Paint::engineHeight / 2;
+	else if ( Settings::ESP::Tracers::type == TracerType::BOTTOM )
+		y = Paint::engineHeight;
+>>>>>>> de939c12... Support for stretched resolution - also no need to reinject when changing csgo resolution
 
         if ( Settings::ESP::Tracers::type == TracerType::CURSOR )
                 y = screenHeight / 2;
         else if ( Settings::ESP::Tracers::type == TracerType::BOTTOM )
                 y = screenHeight;
 
+<<<<<<< HEAD
         bool bIsVisible = Entity::IsVisible( player, ( int ) Bone::BONE_HEAD, 180.f, Settings::ESP::Filters::smokeCheck );
         Draw::AddLine( ( int ) ( src.x ), ( int ) ( src.y ), x, y, ESP::GetESPPlayerColor( player, bIsVisible ) );
+=======
+	Vector spot2D;
+	if( debugOverlay->ScreenPosition( Settings::Debug::AutoAim::target, spot2D) )
+		return;
+
+	Draw::AddLine( Paint::engineWidth / 2, Paint::engineHeight / 2, spot2D.x, spot2D.y, ImColor( 45, 235, 60 ) );
+	Draw::AddCircle( Paint::engineWidth / 2, Paint::engineHeight / 2, 1, ImColor( 45, 235, 60 ) );
+	Draw::AddCircle( spot2D.x, spot2D.y, 1, ImColor( 45, 235, 60 ) );
+
+    Vector start2D = Vector(0,0,0);
+    Vector end2D;
+    if( !debugOverlay->ScreenPosition( lastRayEnd, end2D ) ){
+        Draw::AddLine( start2D.x, start2D.y, end2D.x, end2D.y, ImColor( 255, 25, 25, 255 ) );
+    }
+>>>>>>> de939c12... Support for stretched resolution - also no need to reinject when changing csgo resolution
 }
 
 static void DrawAimbotSpot( )
@@ -1716,9 +1765,12 @@ static void DrawFOVCrosshair()
 	if( Settings::Aimbot::AutoAim::fov > OverrideView::currentFOV )
 		return;
 
+<<<<<<< HEAD
 	int width, height;
 	engine->GetScreenSize( width, height );
 
+=======
+>>>>>>> de939c12... Support for stretched resolution - also no need to reinject when changing csgo resolution
 	float radius;
 	if ( Settings::Aimbot::AutoAim::realDistance )
 	{
@@ -1747,6 +1799,7 @@ static void DrawFOVCrosshair()
 		if ( debugOverlay->ScreenPosition( maxAimAt, max2D ) )
 			return;
 
+<<<<<<< HEAD
 		radius = fabsf( width / 2 - max2D.x );
 	}
 	else
@@ -1759,10 +1812,24 @@ static void DrawFOVCrosshair()
 		Draw::AddCircleFilled( width / 2, height / 2 , radius, Settings::ESP::FOVCrosshair::color.Color(), std::max(12, (int)radius*2) );
 	else
 		Draw::AddCircle( width / 2, height / 2, radius, Settings::ESP::FOVCrosshair::color.Color(), std::max(12, (int)radius*2) );
+=======
+		radius = fabsf(Paint::engineWidth / 2 - max2D.x);
+	}
+	else
+		radius = ((Settings::Aimbot::AutoAim::fov / OverrideView::currentFOV) * Paint::engineWidth) / 2;
+
+	radius = std::min(radius, (((180.f / OverrideView::currentFOV) * Paint::engineWidth) / 2)); // prevents a big radius (CTD).
+
+	if (Settings::ESP::FOVCrosshair::filled)
+		Draw::AddCircleFilled(Paint::engineWidth / 2, Paint::engineHeight / 2 , radius, Settings::ESP::FOVCrosshair::color.Color(), std::max(12, (int)radius*2));
+	else
+		Draw::AddCircle(Paint::engineWidth / 2, Paint::engineHeight / 2, radius, Settings::ESP::FOVCrosshair::color.Color(), std::max(12, (int)radius*2));
+>>>>>>> de939c12... Support for stretched resolution - also no need to reinject when changing csgo resolution
 }
 
 static void DrawSpread()
 {
+<<<<<<< HEAD
         if ( !Settings::ESP::Spread::enabled && !Settings::ESP::Spread::spreadLimit )
                 return;
 
@@ -1798,6 +1865,36 @@ static void DrawSpread()
                             ( width / 2 ) + radius + 1, ( height / 2 ) + radius + 2 ,
                             Settings::ESP::Spread::spreadLimitColor.Color() );
                 }
+=======
+    if ( !Settings::ESP::Spread::enabled && !Settings::ESP::Spread::spreadLimit )
+        return;
+
+    C_BasePlayer* localplayer = ( C_BasePlayer* ) entityList->GetClientEntity( engine->GetLocalPlayer() );
+    if ( !localplayer )
+        return;
+
+    C_BaseCombatWeapon* activeWeapon = ( C_BaseCombatWeapon* ) entityList->GetClientEntityFromHandle(
+            localplayer->GetActiveWeapon() );
+    if ( !activeWeapon )
+        return;
+
+    if ( Settings::ESP::Spread::enabled ) {
+        float cone = activeWeapon->GetSpread() + activeWeapon->GetInaccuracy();
+        if ( cone > 0.0f ) {
+            float radius = ( cone * Paint::engineHeight ) / 1.5f;
+            Draw::AddRect( ( ( Paint::engineWidth / 2 ) - radius ), ( Paint::engineHeight / 2 ) - radius + 1,
+                               ( Paint::engineWidth / 2 ) + radius + 1, ( Paint::engineHeight / 2 ) + radius + 2,
+                               Settings::ESP::Spread::color.Color() );
+        }
+    }
+    if ( Settings::ESP::Spread::spreadLimit ) {
+        float cone = Settings::Aimbot::SpreadLimit::value;
+        if ( cone > 0.0f ) {
+            float radius = ( cone * Paint::engineHeight ) / 1.5f;
+            Draw::AddRect( ( ( Paint::engineWidth / 2 ) - radius ), ( Paint::engineHeight / 2 ) - radius + 1,
+                               ( Paint::engineWidth / 2 ) + radius + 1, ( Paint::engineHeight / 2 ) + radius + 2 ,
+                               Settings::ESP::Spread::spreadLimitColor.Color() );
+>>>>>>> de939c12... Support for stretched resolution - also no need to reinject when changing csgo resolution
         }
 }
 
@@ -1814,11 +1911,16 @@ static void DrawScope()
         if (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_SG556 || *activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_AUG)
                 return;
 
+<<<<<<< HEAD
         int width, height;
         engine->GetScreenSize( width, height );
 
         Draw::AddLine(0, height * 0.5, width, height * 0.5, ImColor(0, 0, 0, 255));
         Draw::AddLine(width * 0.5, 0, width * 0.5, height, ImColor(0, 0, 0, 255));
+=======
+    Draw::AddLine(0, Paint::engineHeight * 0.5, Paint::engineWidth, Paint::engineHeight * 0.5, ImColor(0, 0, 0, 255));
+    Draw::AddLine(Paint::engineWidth * 0.5, 0, Paint::engineWidth * 0.5, Paint::engineHeight, ImColor(0, 0, 0, 255));
+>>>>>>> de939c12... Support for stretched resolution - also no need to reinject when changing csgo resolution
 }
 
 bool ESP::PrePaintTraverse(VPANEL vgui_panel, bool force_repaint, bool allow_force)
