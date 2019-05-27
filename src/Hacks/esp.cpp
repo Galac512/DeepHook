@@ -405,6 +405,7 @@ bool ESP::WorldToScreen( const Vector &origin, ImVec2 * const screen ) {
                 return false;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static int iWidth = 0;
 	static int iHeight = 0;
 	static float width;
@@ -433,6 +434,8 @@ bool ESP::WorldToScreen( const Vector &origin, ImVec2 * const screen ) {
                     vMatrix[1][3]) * inverseW) * height + 0.5f);
         return true;
 =======
+=======
+>>>>>>> de939c12... Support for stretched resolution - also no need to reinject when changing csgo resolution
 	float width = (float)Paint::engineWidth;
 	float height = (float)Paint::engineHeight;
 
@@ -739,12 +742,15 @@ static void DrawTracer( C_BasePlayer* player )
         if ( debugOverlay->ScreenPosition( src3D, src ) )
                 return;
 
+<<<<<<< HEAD
         int screenWidth, screenHeight;
         engine->GetScreenSize( screenWidth, screenHeight );
 
         int x = screenWidth / 2;
         int y = 0;
 =======
+=======
+>>>>>>> de939c12... Support for stretched resolution - also no need to reinject when changing csgo resolution
 	int x = Paint::engineWidth / 2;
 	int y = 0;
 
@@ -752,6 +758,7 @@ static void DrawTracer( C_BasePlayer* player )
 		y = Paint::engineHeight / 2;
 	else if ( Settings::ESP::Tracers::type == TracerType::BOTTOM )
 		y = Paint::engineHeight;
+<<<<<<< HEAD
 >>>>>>> de939c12... Support for stretched resolution - also no need to reinject when changing csgo resolution
 
         if ( Settings::ESP::Tracers::type == TracerType::CURSOR )
@@ -763,6 +770,25 @@ static void DrawTracer( C_BasePlayer* player )
         bool bIsVisible = Entity::IsVisible( player, ( int ) Bone::BONE_HEAD, 180.f, Settings::ESP::Filters::smokeCheck );
         Draw::AddLine( ( int ) ( src.x ), ( int ) ( src.y ), x, y, ESP::GetESPPlayerColor( player, bIsVisible ) );
 =======
+=======
+
+	bool bIsVisible = Entity::IsVisible( player, ( int ) Bone::BONE_HEAD, 180.f, Settings::ESP::Filters::smokeCheck );
+	Draw::AddLine( ( int ) ( src.x ), ( int ) ( src.y ), x, y, ESP::GetESPPlayerColor( player, bIsVisible ) );
+}
+static void DrawAimbotSpot( ) {
+	C_BasePlayer* localplayer = ( C_BasePlayer* ) entityList->GetClientEntity( engine->GetLocalPlayer() );
+	if ( !localplayer || !localplayer->GetAlive() ){
+		Settings::Debug::AutoAim::target = {0,0,0};
+		return;
+	}
+	if ( !Settings::Aimbot::AutoAim::enabled || !Settings::Aimbot::enabled ){
+		Settings::Debug::AutoAim::target = {0,0,0};
+		return;
+	}
+	if ( Settings::Debug::AutoAim::target.IsZero() )
+		return;
+
+>>>>>>> de939c12... Support for stretched resolution - also no need to reinject when changing csgo resolution
 	Vector spot2D;
 	if( debugOverlay->ScreenPosition( Settings::Debug::AutoAim::target, spot2D) )
 		return;
@@ -1766,9 +1792,12 @@ static void DrawFOVCrosshair()
 		return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	int width, height;
 	engine->GetScreenSize( width, height );
 
+=======
+>>>>>>> de939c12... Support for stretched resolution - also no need to reinject when changing csgo resolution
 =======
 >>>>>>> de939c12... Support for stretched resolution - also no need to reinject when changing csgo resolution
 	float radius;
@@ -1800,6 +1829,7 @@ static void DrawFOVCrosshair()
 			return;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		radius = fabsf( width / 2 - max2D.x );
 	}
 	else
@@ -1813,6 +1843,8 @@ static void DrawFOVCrosshair()
 	else
 		Draw::AddCircle( width / 2, height / 2, radius, Settings::ESP::FOVCrosshair::color.Color(), std::max(12, (int)radius*2) );
 =======
+=======
+>>>>>>> de939c12... Support for stretched resolution - also no need to reinject when changing csgo resolution
 		radius = fabsf(Paint::engineWidth / 2 - max2D.x);
 	}
 	else
@@ -1824,6 +1856,9 @@ static void DrawFOVCrosshair()
 		Draw::AddCircleFilled(Paint::engineWidth / 2, Paint::engineHeight / 2 , radius, Settings::ESP::FOVCrosshair::color.Color(), std::max(12, (int)radius*2));
 	else
 		Draw::AddCircle(Paint::engineWidth / 2, Paint::engineHeight / 2, radius, Settings::ESP::FOVCrosshair::color.Color(), std::max(12, (int)radius*2));
+<<<<<<< HEAD
+>>>>>>> de939c12... Support for stretched resolution - also no need to reinject when changing csgo resolution
+=======
 >>>>>>> de939c12... Support for stretched resolution - also no need to reinject when changing csgo resolution
 }
 
@@ -1908,6 +1943,7 @@ static void DrawScope()
         if (!activeWeapon)
                 return;
 
+<<<<<<< HEAD
         if (*activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_SG556 || *activeWeapon->GetItemDefinitionIndex() == ItemDefinitionIndex::WEAPON_AUG)
                 return;
 
@@ -1917,6 +1953,10 @@ static void DrawScope()
 
         Draw::AddLine(0, height * 0.5, width, height * 0.5, ImColor(0, 0, 0, 255));
         Draw::AddLine(width * 0.5, 0, width * 0.5, height, ImColor(0, 0, 0, 255));
+=======
+    Draw::AddLine(0, Paint::engineHeight * 0.5, Paint::engineWidth, Paint::engineHeight * 0.5, ImColor(0, 0, 0, 255));
+    Draw::AddLine(Paint::engineWidth * 0.5, 0, Paint::engineWidth * 0.5, Paint::engineHeight, ImColor(0, 0, 0, 255));
+>>>>>>> de939c12... Support for stretched resolution - also no need to reinject when changing csgo resolution
 =======
     Draw::AddLine(0, Paint::engineHeight * 0.5, Paint::engineWidth, Paint::engineHeight * 0.5, ImColor(0, 0, 0, 255));
     Draw::AddLine(Paint::engineWidth * 0.5, 0, Paint::engineWidth * 0.5, Paint::engineHeight, ImColor(0, 0, 0, 255));

@@ -57,6 +57,9 @@ void Hooks::Paint(void* thisptr, PaintMode_t mode)
     int width, height;
     engine->GetScreenSize( width, height );
 
+    int width, height;
+    engine->GetScreenSize( width, height );
+
 	if (Settings::ScreenshotCleaner::enabled && engine->IsTakingScreenshot())
 		return;
 >>>>>>> de939c12... Support for stretched resolution - also no need to reinject when changing csgo resolution
@@ -147,9 +150,12 @@ void Hooks::PaintImGui()
 #undef value
                 }
 <<<<<<< HEAD
+<<<<<<< HEAD
         }
 }
 =======
+=======
+>>>>>>> de939c12... Support for stretched resolution - also no need to reinject when changing csgo resolution
             }
             FinishDrawing(surface);
         }
