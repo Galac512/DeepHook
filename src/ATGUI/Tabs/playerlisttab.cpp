@@ -19,7 +19,6 @@ void PlayerList::RenderTab()
 	if (!engine->IsInGame() || (*csPlayerResource && !(*csPlayerResource)->GetConnected(currentPlayer)))
 		currentPlayer = -1;
 	
-	ImGui::ListBoxHeader(XORSTR("##PLAYERS"), ImVec2(-1, (ImGui::GetWindowSize().y - 95)));
 	if (engine->IsInGame() && *csPlayerResource)
 	{
 		ImGui::Columns(8);
@@ -126,10 +125,11 @@ void PlayerList::RenderTab()
 			}
 		}
 	}
-	ImGui::ListBoxFooter();
 	
 	if (currentPlayer != -1)
 	{
+		ImGui::Separator();
+		ImGui::Spacing();
 		IEngineClient::player_info_t entityInformation;
 		engine->GetPlayerInfo(currentPlayer, &entityInformation);
 		
