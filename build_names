@@ -951,9 +951,6 @@ libply-boot-client.so
 libply.so
 libply-splash-core.so
 libply-splash-graphics.so
-libpng12.so
-libpng16.so
-libpng.so
 libpoldiff.so
 libpolkit-agent-1.so
 libpolkit-gobject-1.so

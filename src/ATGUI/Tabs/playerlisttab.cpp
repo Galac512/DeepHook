@@ -68,7 +68,7 @@ void PlayerList::RenderTab()
 		
 		for (int team = (int) TeamID::TEAM_UNASSIGNED; team <= (int) TeamID::TEAM_COUNTER_TERRORIST ; team++)
 		{
-			char* teamName = strdup("");
+			char* teamName;
 			switch ((TeamID) team)
 			{
 			case TeamID::TEAM_UNASSIGNED:
@@ -83,6 +83,8 @@ void PlayerList::RenderTab()
 			case TeamID::TEAM_COUNTER_TERRORIST:
 				teamName = strdup(XORSTR("Counter Terrorist"));
 				break;
+			default:
+				teamName = strdup("");
 			}
 			
 			for (auto it : players[(TeamID) team])

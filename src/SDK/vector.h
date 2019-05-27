@@ -70,11 +70,11 @@ public:
 
 	VMatrix() {}
 	VMatrix(
-			float m00, float m01, float m02, float m03,
-			float m10, float m11, float m12, float m13,
-			float m20, float m21, float m22, float m23,
-			float m30, float m31, float m32, float m33
-	){
+		float m00, float m01, float m02, float m03,
+		float m10, float m11, float m12, float m13,
+		float m20, float m21, float m22, float m23,
+		float m30, float m31, float m32, float m33
+		){
 		m[0][0] = m00;
 		m[0][1] = m01;
 		m[0][2] = m02;
@@ -156,8 +156,8 @@ public:
 	bool IsZero(float tolerance = 0.01f) const
 	{
 		return (x > -tolerance && x < tolerance &&
-			y > -tolerance && y < tolerance &&
-			z > -tolerance && z < tolerance);
+		    y > -tolerance && y < tolerance &&
+		    z > -tolerance && z < tolerance);
 	}
 	Vector	Normalize();
 	float	NormalizeInPlace();
@@ -192,7 +192,7 @@ inline Vector::Vector(float X, float Y, float Z)
 	CHECK_VALID(*this);
 }
 //===============================================
-inline Vector::Vector(void){ }
+inline Vector::Vector(void){ Zero(); }
 //===============================================
 inline void Vector::Zero()
 {
@@ -561,7 +561,7 @@ inline void VectorMA(const float * start, float scale, const float *direction, f
 class ALIGN16 VectorAligned : public Vector
 {
 public:
-	inline VectorAligned(void) {};
+	inline VectorAligned() = default;
 	inline VectorAligned(float X, float Y, float Z)
 	{
 		Init(X, Y, Z);
@@ -659,7 +659,7 @@ public:
 	bool IsZero(float tolerance = 0.01f) const
 	{
 		return (x > -tolerance && x < tolerance &&
-			y > -tolerance && y < tolerance);
+		    y > -tolerance && y < tolerance);
 	}
 
 	float	Normalize();
@@ -1177,13 +1177,13 @@ inline void ComputeClosestPoint2D(const Vector2D& vecStart, float flMaxDist, con
 inline Vector2D Vector2D::Min(const Vector2D &vOther) const
 {
 	return Vector2D(x < vOther.x ? x : vOther.x,
-		y < vOther.y ? y : vOther.y);
+	    y < vOther.y ? y : vOther.y);
 }
 
 inline Vector2D Vector2D::Max(const Vector2D &vOther) const
 {
 	return Vector2D(x > vOther.x ? x : vOther.x,
-		y > vOther.y ? y : vOther.y);
+	    y > vOther.y ? y : vOther.y);
 }
 
 
@@ -1282,8 +1282,8 @@ public:
 	bool IsZero(float tolerance = 0.01f) const
 	{
 		return (x > -tolerance && x < tolerance &&
-				y > -tolerance && y < tolerance &&
-				z > -tolerance && z < tolerance);
+		    y > -tolerance && y < tolerance &&
+		    z > -tolerance && z < tolerance);
 	}
 
 	// arithmetic operations
