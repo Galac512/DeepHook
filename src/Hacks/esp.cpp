@@ -119,11 +119,11 @@ bool Settings::ESP::DangerZone::drawDistEnabled = false;
 bool Settings::ESP::DangerZone::upgrade = false;
 bool Settings::ESP::DangerZone::lootcrate = false;
 bool Settings::ESP::DangerZone::radarjammer = false;
+bool Settings::ESP::DangerZone::barrel = false;
 bool Settings::ESP::DangerZone::ammobox = false;
 bool Settings::ESP::DangerZone::safe = false;
 bool Settings::ESP::DangerZone::dronegun = false;
 bool Settings::ESP::DangerZone::drone = false;
-bool Settings::ESP::DangerZone::breachcharge = false;
 bool Settings::ESP::DangerZone::cash = false;
 bool Settings::ESP::DangerZone::tablet = false;
 bool Settings::ESP::DangerZone::healthshot = false;
@@ -131,12 +131,11 @@ bool Settings::ESP::DangerZone::melee = false;
 ColorVar Settings::ESP::DangerZone::upgradeColor = ImColor(255, 0, 0, 255);
 ColorVar Settings::ESP::DangerZone::lootcrateColor = ImColor(255, 0, 0, 255);
 ColorVar Settings::ESP::DangerZone::radarjammerColor = ImColor(255, 0, 0, 255);
+ColorVar Settings::ESP::DangerZone::barrelColor = ImColor(255, 0, 0, 255);
 ColorVar Settings::ESP::DangerZone::ammoboxColor = ImColor(255, 0, 0, 255);
 ColorVar Settings::ESP::DangerZone::safeColor = ImColor(255, 0, 0, 255);
 ColorVar Settings::ESP::DangerZone::dronegunColor = ImColor(255, 0, 0, 255);
 ColorVar Settings::ESP::DangerZone::droneColor = ImColor(255, 0, 0, 255);
-ColorVar Settings::ESP::DangerZone::breachchargeColor = ImColor(255, 0, 0, 255);
-ColorVar Settings::ESP::DangerZone::pbreachchargeColor = ImColor(255, 0, 0, 255);
 ColorVar Settings::ESP::DangerZone::cashColor = ImColor(255, 0, 0, 255);
 ColorVar Settings::ESP::DangerZone::tabletColor = ImColor(255, 0, 0, 255);
 ColorVar Settings::ESP::DangerZone::healthshotColor = ImColor(255, 0, 0, 255);
@@ -1325,10 +1324,23 @@ static void DrawSentryTurret(C_BaseEntity *sentry, C_BasePlayer* localplayer)
 
 static void DrawRadarJammer(C_BaseEntity *jammer, C_BasePlayer* localplayer)
 {
-	// Draw Distance only in DangerZone
 	if (dzShouldDraw(jammer, localplayer))
 		return;
-	DrawEntity(jammer, XORSTR("Radar Jammer"), Settings::ESP::DangerZone::radarjammerColor.Color());
+    DrawEntity(jammer, XORSTR("Radar Jammer"), Settings::ESP::DangerZone::radarjammerColor.Color());
+}
+
+static void DrawExplosiveBarrel(C_BaseEntity *barrel, C_BasePlayer* localplayer)
+{
+	if (dzShouldDraw(barrel, localplayer))
+		return;
+	studiohdr_t* barrelModel = modelInfo->GetStudioModel(barrel->GetModel());
+	if (!barrelModel)
+		return;
+	std::string mdlName = barrelModel->name;
+	mdlName = mdlName.substr(mdlName.find_last_of('/') + 1);
+	if (mdlName.find(XORSTR("exploding_barrel.mdl")) == mdlName.npos)
+		return;
+    DrawEntity(barrel, XORSTR("Explosive Barrel"), Settings::ESP::DangerZone::barrelColor.Color());
 }
 
 static void DrawDrone(C_BaseEntity *drone, C_BasePlayer* localplayer)
@@ -1336,26 +1348,15 @@ static void DrawDrone(C_BaseEntity *drone, C_BasePlayer* localplayer)
 	// TODO: Add Drone info (owner/package).
 	if (dzShouldDraw(drone, localplayer))
 		return;
-	DrawEntity(drone, XORSTR("Drone"), Settings::ESP::DangerZone::droneColor.Color());
-}
-
-static void DrawBreachCharge(C_BaseEntity *charge, ClientClass* client, C_BasePlayer* localplayer)
-{
-	if (dzShouldDraw(charge, localplayer))
-		return;
-	if (client->m_ClassID == EClassIds::CBreachCharge)
-		DrawEntity(charge, XORSTR("Breach Charge"), Settings::ESP::DangerZone::breachchargeColor.Color());
-	else // client->m_ClassID == EClassIds::CBreachChargeProjectile
-		DrawEntity(charge, XORSTR("Breach Charge (placed)"), Settings::ESP::DangerZone::pbreachchargeColor.Color());
+    DrawEntity(drone, XORSTR("Drone"), Settings::ESP::DangerZone::droneColor.Color());
 }
 
 static void DrawCash(C_BaseEntity *cash, C_BasePlayer* localplayer)
 {
 	if (dzShouldDraw(cash, localplayer))
 		return;
-	DrawEntity(cash, XORSTR("Cash"), Settings::ESP::DangerZone::cashColor.Color());
+    DrawEntity(cash, XORSTR("Cash"), Settings::ESP::DangerZone::cashColor.Color());
 }
-
 static void DrawTablet(C_BaseEntity *tablet, C_BasePlayer* localplayer)
 {
 	if (dzShouldDraw(tablet, localplayer))
@@ -1805,7 +1806,7 @@ void ESP::Paint()
 
                 ClientClass* client = entity->GetClientClass();
 
-                if (client->m_ClassID == EClassIds::CCSPlayer && (Settings::ESP::Filters::enemies || Settings::ESP::Filters::allies || (Settings::ESP::Filters::localplayer && Settings::ThirdPerson::enabled)))
+		if ((client->m_ClassID != EClassIds::CBaseWeaponWorldModel && (strstr(client->m_pNetworkName, XORSTR("Weapon")) || client->m_ClassID == EClassIds::CDEagle || client->m_ClassID == EClassIds::CAK47 || client->m_ClassID == EClassIds::CBreachCharge || client->m_ClassID == EClassIds::CBumpMine)) && client->m_ClassID != EClassIds::CPhysPropWeaponUpgrade && Settings::ESP::Filters::weapons)
                 {
                         C_BasePlayer* player = (C_BasePlayer*) entity;
 
@@ -1863,18 +1864,11 @@ void ESP::Paint()
 			else if (Settings::ESP::DangerZone::radarjammer && client->m_ClassID == EClassIds::CPhysPropRadarJammer)
 				DrawRadarJammer(entity, localplayer);
 
-			/*else if (Settings::ESP::DangerZone::barrel && client->m_ClassID == EClassIds::CPhysicsProp) // exploding_barrel.mdl
-			  DrawExplosiveBarrel(entity, localplayer);*/
-
-			/*else if (Settings::ESP::DangerZone::bumpmine && client->m_ClassID == EClassIds::CBumpMine)
-				DrawExplosiveBarrel(entity, localplayer);*/
-
+			else if (Settings::ESP::DangerZone::barrel && client->m_ClassID == EClassIds::CPhysicsProp)
+				DrawExplosiveBarrel(entity, localplayer);
 
 			else if (Settings::ESP::DangerZone::drone && client->m_ClassID == EClassIds::CDrone)
 				DrawDrone(entity, localplayer);
-
-			else if (Settings::ESP::DangerZone::breachcharge && (client->m_ClassID == EClassIds::CBreachCharge || client->m_ClassID == EClassIds::CBreachChargeProjectile))
-				DrawBreachCharge(entity, client, localplayer);
 
 			else if (Settings::ESP::DangerZone::cash && client->m_ClassID == EClassIds::CItemCash)
 				DrawCash(entity, localplayer);
