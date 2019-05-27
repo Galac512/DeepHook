@@ -602,7 +602,8 @@ namespace Settings
                 extern ColorVar flashbangColor;
                 extern ColorVar grenadeColor;
                 extern ColorVar molotovColor;
-		extern ColorVar infoColor;
+		extern ColorVar allyInfoColor;
+		extern ColorVar enemyInfoColor;
                 extern HealthColorVar localplayerColor;
 
                 namespace Glow
@@ -660,8 +661,8 @@ namespace Settings
                 namespace Skeleton
                 {
                         extern bool enabled;
-                        extern ColorVar color;
-                }
+			extern ColorVar enemyColor;
+			extern ColorVar allyColor;                }
 
                 namespace Boxes
                 {

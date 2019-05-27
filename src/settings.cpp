@@ -283,8 +283,9 @@ void Settings::LoadDefaultsOrSave(std::string path)
         LoadColor(settings[XORSTR("ESP")][XORSTR("flashbang_color")], Settings::ESP::flashbangColor);
         LoadColor(settings[XORSTR("ESP")][XORSTR("grenade_color")], Settings::ESP::grenadeColor);
         LoadColor(settings[XORSTR("ESP")][XORSTR("molotov_color")], Settings::ESP::molotovColor);
-	LoadColor(settings[XORSTR("ESP")][XORSTR("info_color")], Settings::ESP::infoColor);
-        settings[XORSTR("ESP")][XORSTR("Glow")][XORSTR("enabled")] = Settings::ESP::Glow::enabled;
+	LoadColor(settings[XORSTR("ESP")][XORSTR("ally_info_color")], Settings::ESP::allyInfoColor);
+	LoadColor(settings[XORSTR("ESP")][XORSTR("enemy_info_color")], Settings::ESP::enemyInfoColor);
+	settings[XORSTR("ESP")][XORSTR("Glow")][XORSTR("enabled")] = Settings::ESP::Glow::enabled;
         LoadColor(settings[XORSTR("ESP")][XORSTR("Glow")][XORSTR("ally_color")], Settings::ESP::Glow::allyColor);
         LoadColor(settings[XORSTR("ESP")][XORSTR("Glow")][XORSTR("enemy_color")], Settings::ESP::Glow::enemyColor);
         LoadColor(settings[XORSTR("ESP")][XORSTR("Glow")][XORSTR("enemy_visible_color")], Settings::ESP::Glow::enemyVisibleColor);
@@ -327,8 +328,8 @@ void Settings::LoadDefaultsOrSave(std::string path)
         settings[XORSTR("ESP")][XORSTR("Boxes")][XORSTR("type")] = (int) Settings::ESP::Boxes::type;
         settings[XORSTR("ESP")][XORSTR("Sprite")][XORSTR("enabled")] = Settings::ESP::Sprite::enabled;
         settings[XORSTR("ESP")][XORSTR("Sprite")][XORSTR("type")] = (int) Settings::ESP::Sprite::type;
-        settings[XORSTR("ESP")][XORSTR("Skeleton")][XORSTR("enabled")] = Settings::ESP::Skeleton::enabled;
-        LoadColor(settings[XORSTR("ESP")][XORSTR("Skeleton")][XORSTR("color")], Settings::ESP::Skeleton::color);
+	LoadColor(settings[XORSTR("ESP")][XORSTR("Skeleton")][XORSTR("ally_color")], Settings::ESP::Skeleton::allyColor);
+	LoadColor(settings[XORSTR("ESP")][XORSTR("Skeleton")][XORSTR("enemy_color")], Settings::ESP::Skeleton::enemyColor);
         settings[XORSTR("ESP")][XORSTR("Bars")][XORSTR("enabled")] = Settings::ESP::Bars::enabled;
         settings[XORSTR("ESP")][XORSTR("Bars")][XORSTR("color_type")] = (int) Settings::ESP::Bars::colorType;
         settings[XORSTR("ESP")][XORSTR("Bars")][XORSTR("type")] = (int) Settings::ESP::Bars::type;
@@ -786,7 +787,8 @@ void Settings::LoadConfig(std::string path)
         GetVal(settings[XORSTR("ESP")][XORSTR("flashbang_color")], &Settings::ESP::flashbangColor);
         GetVal(settings[XORSTR("ESP")][XORSTR("grenade_color")], &Settings::ESP::grenadeColor);
         GetVal(settings[XORSTR("ESP")][XORSTR("molotov_color")], &Settings::ESP::molotovColor);
-	GetVal(settings[XORSTR("ESP")][XORSTR("info_color")], &Settings::ESP::infoColor);
+	GetVal(settings[XORSTR("ESP")][XORSTR("ally_info_color")], &Settings::ESP::allyInfoColor);
+	GetVal(settings[XORSTR("ESP")][XORSTR("enemy_info_color")], &Settings::ESP::enemyInfoColor);
         GetVal(settings[XORSTR("ESP")][XORSTR("Glow")][XORSTR("enabled")], &Settings::ESP::Glow::enabled);
         GetVal(settings[XORSTR("ESP")][XORSTR("Glow")][XORSTR("ally_color")], &Settings::ESP::Glow::allyColor);
         GetVal(settings[XORSTR("ESP")][XORSTR("Glow")][XORSTR("enemy_color")], &Settings::ESP::Glow::enemyColor);
@@ -829,8 +831,8 @@ void Settings::LoadConfig(std::string path)
         GetVal(settings[XORSTR("ESP")][XORSTR("Boxes")][XORSTR("enabled")], &Settings::ESP::Boxes::enabled);
         GetVal(settings[XORSTR("ESP")][XORSTR("Boxes")][XORSTR("type")], (int*)& Settings::ESP::Boxes::type);
         GetVal(settings[XORSTR("ESP")][XORSTR("Skeleton")][XORSTR("enabled")], &Settings::ESP::Skeleton::enabled);
-        GetVal(settings[XORSTR("ESP")][XORSTR("Skeleton")][XORSTR("color")], &Settings::ESP::Skeleton::color);
-        GetVal(settings[XORSTR("ESP")][XORSTR("Bars")][XORSTR("enabled")], &Settings::ESP::Bars::enabled);
+	GetVal(settings[XORSTR("ESP")][XORSTR("Skeleton")][XORSTR("ally_color")], &Settings::ESP::Skeleton::allyColor);
+	GetVal(settings[XORSTR("ESP")][XORSTR("Skeleton")][XORSTR("enemy_color")], &Settings::ESP::Skeleton::enemyColor);        GetVal(settings[XORSTR("ESP")][XORSTR("Bars")][XORSTR("enabled")], &Settings::ESP::Bars::enabled);
         GetVal(settings[XORSTR("ESP")][XORSTR("Bars")][XORSTR("color_type")], (int*)& Settings::ESP::Bars::colorType);
         GetVal(settings[XORSTR("ESP")][XORSTR("Bars")][XORSTR("type")], (int*)& Settings::ESP::Bars::type);
         GetVal(settings[XORSTR("ESP")][XORSTR("Tracers")][XORSTR("enabled")], &Settings::ESP::Tracers::enabled);
