@@ -3,3 +3,9 @@ Meme fork of Fuzion
 
 * I stole your commit?
 I am sorry, ask for credit here.
+* TODO
+  - Add legit autowall
+  - Add hitchance triggerbot
+  - Get `INetworkChannel` pointer
+  - Speed Graph
+  - Better Bomb ESP (Show remaining time on screen)
