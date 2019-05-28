@@ -31,6 +31,8 @@ static bool smoothSaltEnabled = false;
 static float smoothSaltMultiplier = 0.0f;
 static bool errorMarginEnabled = false;
 static float errorMarginValue = 0.0f;
+static bool randomEnabled = false;
+static float randomValue = 0.2f;
 static bool curveEnabled = false;
 static float curveValue[5] = { 0.390f, 0.575f, 0.565f, 0.900f };
 static bool autoAimEnabled = false;
@@ -88,6 +90,8 @@ void UI::ReloadWeaponSettings()
 	smoothSaltMultiplier = Settings::Aimbot::weapons.at(index).smoothSaltMultiplier;
 	errorMarginEnabled = Settings::Aimbot::weapons.at(index).errorMarginEnabled;
 	errorMarginValue = Settings::Aimbot::weapons.at(index).errorMarginValue;
+	randomEnabled = Settings::Aimbot::weapons.at(index).randomEnabled;
+	randomValue = Settings::Aimbot::weapons.at(index).randomValue;
 	curveEnabled = Settings::Aimbot::weapons.at(index).curveEnabled;
 	autoAimEnabled = Settings::Aimbot::weapons.at(index).autoAimEnabled;
 	autoAimValue = Settings::Aimbot::weapons.at(index).autoAimFov;
@@ -145,6 +149,7 @@ void UI::UpdateWeaponSettings()
 		.smoothEnabled = smoothEnabled,
 		.smoothSaltEnabled = smoothSaltEnabled,
 		.errorMarginEnabled = errorMarginEnabled,
+		.randomEnabled = randomEnabled,
 		.curveEnabled = curveEnabled,
 		.autoAimEnabled = autoAimEnabled,
 		.aimStepEnabled = aimStepEnabled,
@@ -175,6 +180,7 @@ void UI::UpdateWeaponSettings()
 		.smoothAmount = smoothValue,
 		.smoothSaltMultiplier = smoothSaltMultiplier,
 		.errorMarginValue = errorMarginValue,
+		.randomValue = randomValue,
 		.autoAimFov = autoAimValue,
 		.aimStepMin = aimStepMin,
 		.aimStepMax = aimStepMax,
@@ -438,6 +444,8 @@ void Aimbot::RenderTab()
 					UI::UpdateWeaponSettings();
 				if (ImGui::Checkbox(XORSTR("Error Margin"), &errorMarginEnabled))
 					UI::UpdateWeaponSettings();
+				if (ImGui::Checkbox(XORSTR("Random"), &randomEnabled))
+					UI::UpdateWeaponSettings();
 				ImGui::PushItemWidth(-1);
 				if (ImGui::Combo(XORSTR("##SMOOTHTYPE"), (int*)& smoothType, smoothTypes, IM_ARRAYSIZE(smoothTypes)))
 					UI::UpdateWeaponSettings();
@@ -451,6 +459,8 @@ void Aimbot::RenderTab()
 				if (ImGui::SliderFloat(XORSTR("##SALT"), &smoothSaltMultiplier, 0, smoothValue))
 					UI::UpdateWeaponSettings();
 				if (ImGui::SliderFloat(XORSTR("##ERROR"), &errorMarginValue, 0, 2))
+					UI::UpdateWeaponSettings();
+				if (ImGui::SliderFloat(XORSTR("##RANDOM"), &randomValue, 0, 0.2f))
 					UI::UpdateWeaponSettings();
 				ImGui::PopItemWidth();
 			}

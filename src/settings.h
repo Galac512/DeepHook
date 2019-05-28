@@ -172,6 +172,7 @@ struct AimbotWeapon_t
 		smoothEnabled,
 		smoothSaltEnabled,
 		errorMarginEnabled,
+		randomEnabled,
 		curveEnabled,
 		autoAimEnabled,
 		aimStepEnabled,
@@ -200,6 +201,7 @@ struct AimbotWeapon_t
 	float smoothAmount = 1.0f,
 		smoothSaltMultiplier = 0.0f,
 		errorMarginValue = 0.0f,
+		randomValue = 0.2f,
 		autoAimFov = 180.0f,
 		aimStepMin = 25.0f,
 		aimStepMax = 35.0f,
@@ -239,6 +241,8 @@ struct AimbotWeapon_t
 		    this->smoothSaltMultiplier == another.smoothSaltMultiplier &&
 		    this->errorMarginEnabled == another.errorMarginEnabled &&
 		    this->errorMarginValue == another.errorMarginValue &&
+		    this->randomEnabled == another.randomEnabled &&
+		    this->randomValue == another.randomValue &&
 		    this->curveEnabled == another.curveEnabled &&
 		    this->curveValue[0] == another.curveValue[0] &&
 		    this->curveValue[1] == another.curveValue[1] &&
@@ -405,6 +409,12 @@ namespace Settings
 		}
 
                 namespace ErrorMargin
+                {
+                        extern bool enabled;
+                        extern float value;
+                }
+
+                namespace Random
                 {
                         extern bool enabled;
                         extern float value;

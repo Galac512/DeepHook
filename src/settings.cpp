@@ -179,6 +179,8 @@ void Settings::LoadDefaultsOrSave(std::string path)
                 weaponSetting[XORSTR("Smooth")][XORSTR("Salting")][XORSTR("Multiplier")] = i.second.smoothSaltMultiplier;
                 weaponSetting[XORSTR("ErrorMargin")][XORSTR("Enabled")] = i.second.errorMarginEnabled;
                 weaponSetting[XORSTR("ErrorMargin")][XORSTR("Value")] = i.second.errorMarginValue;
+                weaponSetting[XORSTR("Random")][XORSTR("Enabled")] = i.second.randomEnabled;
+                weaponSetting[XORSTR("Random")][XORSTR("Value")] = i.second.randomValue;
                 weaponSetting[XORSTR("Curve")][XORSTR("Enabled")] = i.second.curveEnabled;
                 weaponSetting[XORSTR("Curve")][XORSTR("Value")][0] = i.second.curveValue[0];
                 weaponSetting[XORSTR("Curve")][XORSTR("Value")][1] = i.second.curveValue[1];
@@ -681,6 +683,7 @@ void Settings::LoadConfig(std::string path)
                         smoothEnabled : weaponSetting[XORSTR( "Smooth" )][XORSTR( "Enabled" )].asBool(),
                         smoothSaltEnabled : weaponSetting[XORSTR( "Smooth" )][XORSTR( "Salting" )][XORSTR( "Enabled" )].asBool(),
                         errorMarginEnabled : weaponSetting[XORSTR( "ErrorMargin" )][XORSTR( "Enabled" )].asBool(),
+                        randomEnabled : weaponSetting[XORSTR( "Random" )][XORSTR( "Enabled" )].asBool(),
                         curveEnabled : weaponSetting[XORSTR( "Curve" )][XORSTR( "Enabled" )].asBool(),
                         autoAimEnabled : weaponSetting[XORSTR( "AutoAim" )][XORSTR( "Enabled" )].asBool(),
                         aimStepEnabled : weaponSetting[XORSTR( "AimStep" )][XORSTR( "Enabled" )].asBool(),
@@ -707,6 +710,7 @@ void Settings::LoadConfig(std::string path)
                         smoothAmount : weaponSetting[XORSTR( "Smooth" )][XORSTR( "Amount" )].asFloat(),
                         smoothSaltMultiplier : weaponSetting[XORSTR( "Smooth" )][XORSTR( "Salting" )][XORSTR( "Multiplier" )].asFloat(),
                         errorMarginValue : weaponSetting[XORSTR( "ErrorMargin" )][XORSTR( "Value" )].asFloat(),
+                        randomValue : weaponSetting[XORSTR( "Random" )][XORSTR( "Value" )].asFloat(),
                         autoAimFov : weaponSetting[XORSTR( "AutoAim" )][XORSTR( "FOV" )].asFloat(),
                         aimStepMin : weaponSetting[XORSTR( "AimStep" )][XORSTR( "min" )].asFloat(),
                         aimStepMax : weaponSetting[XORSTR( "AimStep" )][XORSTR( "max" )].asFloat(),

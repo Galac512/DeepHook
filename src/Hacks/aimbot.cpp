@@ -22,6 +22,8 @@ float Settings::Aimbot::Smooth::value = 0.5f;
 SmoothType Settings::Aimbot::Smooth::type = SmoothType::SLOW_END;
 bool Settings::Aimbot::ErrorMargin::enabled = false;
 float Settings::Aimbot::ErrorMargin::value = 0.0f;
+bool Settings::Aimbot::Random::enabled = false;
+float Settings::Aimbot::Random::value = 0.2f;
 bool Settings::Aimbot::AutoAim::enabled = false;
 float Settings::Aimbot::AutoAim::fov = 180.0f;
 bool Settings::Aimbot::AutoAim::realDistance = false;
@@ -138,6 +140,8 @@ static bool HeadMultiPoint(C_BasePlayer *player, Vector points[])
 
         return true;
 }
+
+
 static float AutoWallBestSpot(C_BasePlayer *player, Vector &bestSpot)
 {
         float bestDamage = Settings::Aimbot::AutoWall::value;
@@ -573,7 +577,7 @@ static void Smooth(C_BasePlayer* player, Vector bestSpot, C_BasePlayer* localpla
                 coeff = std::min(1.f, coeff);
                 toChange = delta * coeff;
         }
-	
+
         if (Settings::Aimbot::Curve::enabled)
         {
                 float progress = toChange.y / delta.y;
@@ -596,10 +600,10 @@ static void Smooth(C_BasePlayer* player, Vector bestSpot, C_BasePlayer* localpla
 		else
 			pPred = std::max(1, pPred-1);
 		/*Vector theta = {0, 0, 0};
-		Math::AngleVectors(toChange, theta);
-		float ticks = (bestSpot.y + theta.y ) / (localEye.y + (player->GetVelocity() * globalVars->interval_per_tick).y);
-		
-		pPred = std::min(Settings::Aimbot::Prediction::amount, (int)(ticks));*/
+		  Math::AngleVectors(toChange, theta);
+		  float ticks = (bestSpot.y + theta.y ) / (localEye.y + (player->GetVelocity() * globalVars->interval_per_tick).y);
+
+		  pPred = std::min(Settings::Aimbot::Prediction::amount, (int)(ticks));*/
 	}
 
         angle = viewAngles + toChange;
@@ -777,6 +781,46 @@ static void FixMouseDeltas(CUserCmd* cmd, const QAngle &angle, const QAngle &old
         cmd->mousedx = -delta.y / ( m_yaw * sens * zoomMultiplier );
         cmd->mousedy = delta.x / ( m_pitch * sens * zoomMultiplier );
 }
+
+static bool ApplyRandom(C_BasePlayer* player, Vector& bestSpot)
+{
+	if (!Settings::Aimbot::Random::enabled)
+		return false;
+
+	static C_BasePlayer* oldPlayer = player;
+	static Vector random = {0.f, 0.f, 0.f};
+
+	if (player != oldPlayer)
+	{
+		random.x = Math::float_rand(-Settings::Aimbot::Random::value, Settings::Aimbot::Random::value);
+		random.y = Math::float_rand(-Settings::Aimbot::Random::value, Settings::Aimbot::Random::value);
+
+		matrix3x4_t matrix[128];
+
+		if( !player->SetupBones(matrix, 128, 0x100, 0.f) )
+			return false;
+		model_t *pModel = player->GetModel();
+		if( !pModel )
+			return false;
+
+		studiohdr_t *hdr = modelInfo->GetStudioModel(pModel);
+		if( !hdr )
+			return false;
+		mstudiobbox_t *bbox = hdr->pHitbox((int)Settings::Aimbot::bone, 0);
+		if( !bbox )
+			return false;
+
+		random.x += Math::float_rand(bbox->bbmin.x, bbox->bbmax.x)*Settings::Aimbot::Random::value;
+		random.y += Math::float_rand(bbox->bbmin.y, bbox->bbmax.y)*Settings::Aimbot::Random::value;
+		random.z += Math::float_rand(bbox->bbmin.z, bbox->bbmax.z)*Settings::Aimbot::Random::value;
+	}
+
+	bestSpot += random;
+	oldPlayer = player;
+
+	return true;
+}
+
 void Aimbot::CreateMove(CUserCmd* cmd)
 {
         C_BasePlayer* localplayer = (C_BasePlayer*) entityList->GetClientEntity(engine->GetLocalPlayer());
@@ -822,10 +866,12 @@ void Aimbot::CreateMove(CUserCmd* cmd)
 			return;
 	}
 
-        Vector bestSpot = {0,0,0};
+        Vector bestSpot = {0.f,0.f,0.f};
         float bestDamage = 0.0f;
         C_BasePlayer* player = GetClosestPlayerAndSpot(cmd, !Settings::Aimbot::AutoWall::enabled, &bestSpot, &bestDamage);
 
+	ApplyRandom(player, bestSpot);
+	
         if (player)
         {
                 if (Settings::Aimbot::IgnoreEnemyJump::enabled && (!(player->GetFlags() & FL_ONGROUND) && player->GetMoveType() != MOVETYPE_LADDER))
@@ -836,7 +882,7 @@ void Aimbot::CreateMove(CUserCmd* cmd)
                         if (cmd->buttons & IN_ATTACK && !Settings::Aimbot::aimkeyOnly)
 				shouldAim = true;
 
-                        if (inputSystem->IsButtonDown(Settings::Aimbot::aimkey)) 
+                        if (inputSystem->IsButtonDown(Settings::Aimbot::aimkey))
                                 shouldAim = true;
 
                         Settings::Debug::AutoAim::target = bestSpot; // For Debug showing aimspot.
@@ -864,7 +910,7 @@ void Aimbot::CreateMove(CUserCmd* cmd)
 		}
 	}
 	else // No player to Shoot
-        { 
+        {
                 Settings::Debug::AutoAim::target = {0,0,0};
                 newTarget = true;
                 lastRandom = {0,0,0};
@@ -941,6 +987,8 @@ void Aimbot::UpdateValues()
         Settings::Aimbot::Smooth::type = currentWeaponSetting.smoothType;
         Settings::Aimbot::ErrorMargin::enabled = currentWeaponSetting.errorMarginEnabled;
         Settings::Aimbot::ErrorMargin::value = currentWeaponSetting.errorMarginValue;
+        Settings::Aimbot::Random::enabled = currentWeaponSetting.randomEnabled;
+        Settings::Aimbot::Random::value = currentWeaponSetting.randomValue;
         Settings::Aimbot::Curve::enabled = currentWeaponSetting.curveEnabled;
         Settings::Aimbot::Curve::value[0] = currentWeaponSetting.curveValue[0];
         Settings::Aimbot::Curve::value[1] = currentWeaponSetting.curveValue[1];
