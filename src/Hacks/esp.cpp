@@ -48,7 +48,8 @@ ColorVar Settings::ESP::chargeColor = ImColor(205, 32, 31, 255);
 ColorVar Settings::ESP::allyInfoColor = ImColor(255, 255, 255, 255);
 ColorVar Settings::ESP::enemyInfoColor = ImColor(255, 255, 255, 255);
 ColorVar Settings::ESP::Skeleton::allyColor = ImColor(255, 255, 255, 255);
-ColorVar Settings::ESP::Skeleton::enemyColor = ImColor(255, 255, 255, 255);ColorVar Settings::ESP::Spread::color = ImColor(15, 200, 45, 255);
+ColorVar Settings::ESP::Skeleton::enemyColor = ImColor(255, 255, 255, 255);
+ColorVar Settings::ESP::Spread::color = ImColor(15, 200, 45, 255);
 ColorVar Settings::ESP::Spread::spreadLimitColor = ImColor(20, 5, 150, 255);
 bool Settings::ESP::Glow::enabled = false;
 HealthColorVar Settings::ESP::Glow::allyColor = ImColor(0, 0, 255, 255);
@@ -90,7 +91,7 @@ bool Settings::ESP::Info::rescuing = false;
 bool Settings::ESP::Info::location = false;
 bool Settings::ESP::Info::money = false;
 bool Settings::ESP::Boxes::enabled = false;
-BoxType Settings::ESP::Boxes::type = BoxType::FRAME_2D;
+BoxType Settings::ESP::Boxes::type = BoxType::BOX;
 bool Settings::ESP::Sprite::enabled = false;
 SpriteType Settings::ESP::Sprite::type = SpriteType::SPRITE_TUX;
 bool Settings::ESP::Bars::enabled = false;
@@ -157,8 +158,10 @@ VMatrix vMatrix = {69.0f,69.0f,69.0f,69.0f,
 
 Vector2D barsSpacing = Vector2D( 0, 0 );
 
-struct Footstep {
-        Footstep( Vector &pos, long expireAt ){
+struct Footstep
+{
+        Footstep( Vector &pos, long expireAt )
+	{
                 position = pos;
                 expiration = expireAt;
         }
@@ -200,14 +203,17 @@ bool dzShouldDraw(C_BaseEntity* ent, C_BasePlayer* localplayer) // Ghetto way to
 	if (!localplayer || !ent || !localplayer->GetAlive())
 		return false;
 	return !(Settings::ESP::DangerZone::drawDistEnabled &&
-	    (localplayer->GetVecOrigin().DistTo(ent->GetVecOrigin()) > Settings::ESP::DangerZone::drawDist));}
+	    (localplayer->GetVecOrigin().DistTo(ent->GetVecOrigin()) > Settings::ESP::DangerZone::drawDist));
+}
 
-static void CheckActiveSounds() {
+static void CheckActiveSounds()
+{
         static CUtlVector<SndInfo_t> sounds; // this has to be static.
         char buf[PATH_MAX];
         static int lastSoundGuid = 0;  // the Unique sound playback ID's increment. It does not get reset to 0
         sound->GetActiveSounds( sounds );
-        for ( int i = 0; i < sounds.Count(); i++ ){
+        for ( int i = 0; i < sounds.Count(); i++ )
+	{
                 if( sounds[i].m_nSoundSource <= 0 || sounds[i].m_nSoundSource > 63 ) // environmental sounds or out of bounds.
                         continue;
                 if( !sounds[i].m_pOrigin ) // no location
@@ -222,13 +228,16 @@ static void CheckActiveSounds() {
                 if ( buf[0] != '~' )
                         continue;
 
-                if ( strstr( buf, XORSTR( "player/land" ) ) != nullptr ){
+                if ( strstr( buf, XORSTR( "player/land" ) ) != nullptr )
+		{
                         {
                                 std::unique_lock<std::mutex> lock( footstepMutex );
                                 playerFootsteps[sounds[i].m_nSoundSource].emplace_back( *sounds[i].m_pOrigin, ( Util::GetEpochTime( ) + Settings::ESP::Sounds::time ) );
                         } // RAII mutex lock
                         lastSoundGuid = sounds[i].m_nGuid;
-                } else if ( strstr( buf, XORSTR( "footstep" ) ) != nullptr ){
+                }
+		else if ( strstr( buf, XORSTR( "footstep" ) ) != nullptr )
+		{
                         {
                                 std::unique_lock<std::mutex> lock( footstepMutex );
                                 playerFootsteps[sounds[i].m_nSoundSource].emplace_back( *sounds[i].m_pOrigin, ( Util::GetEpochTime( ) + Settings::ESP::Sounds::time ) );
@@ -300,7 +309,8 @@ static bool GetBox( C_BaseEntity* entity, int& x, int& y, int& w, int& h ) {
         bottom = flb.y;
 
         // Find the bounding corners for our box
-        for ( int i = 1; i < 8; i++ ) {
+        for ( int i = 1; i < 8; i++ )
+	{
                 if ( left > arr[i].x )
                         left = arr[i].x;
                 if ( bottom < arr[i].y )
@@ -425,6 +435,20 @@ bool ESP::WorldToScreen( const Vector &origin, ImVec2 * const screen ) {
 
 static void DrawBox( ImColor color, int x, int y, int w, int h, C_BaseEntity* entity )
 {
+        if ( Settings::ESP::Boxes::type == BoxType::BOX )
+        {
+                // top
+                Draw::AddRect( x, y, x+w + 1, y + 1, color );
+
+		// bottom
+                Draw::AddRect( x, y+h, x+w + 1, y+h + 1, color );
+
+		// left
+                Draw::AddRect( x, y, x + 1, y+h + 2, color );
+
+		// right
+                Draw::AddRect( x+w, y, x+w + 1, y+h + 2, color );
+        }
         if ( Settings::ESP::Boxes::type == BoxType::FRAME_2D )
         {
                 int VertLine = w / 3;
@@ -658,7 +682,8 @@ static void DrawSkeleton( C_BasePlayer* player, C_BasePlayer* localplayer )
 	}
 }
 
-static void DrawBulletTrace( C_BasePlayer* player ) {
+static void DrawBulletTrace( C_BasePlayer* player )
+{
         Vector src3D, dst3D, forward;
         Vector src, dst;
         trace_t tr;
@@ -680,7 +705,9 @@ static void DrawBulletTrace( C_BasePlayer* player ) {
         Draw::AddLine( src.x, src.y, dst.x, dst.y, ESP::GetESPPlayerColor( player, true ) );
         Draw::AddRectFilled( ( int ) ( dst.x - 3 ), ( int ) ( dst.y - 3 ), 6, 6, ESP::GetESPPlayerColor( player, false ) );
 }
-static void DrawTracer( C_BasePlayer* player ) {
+
+static void DrawTracer( C_BasePlayer* player )
+{
         Vector src3D;
         Vector src;
         src3D = player->GetVecOrigin() - Vector( 0, 0, 0 );
@@ -702,13 +729,17 @@ static void DrawTracer( C_BasePlayer* player ) {
         bool bIsVisible = Entity::IsVisible( player, ( int ) Bone::BONE_HEAD, 180.f, Settings::ESP::Filters::smokeCheck );
         Draw::AddLine( ( int ) ( src.x ), ( int ) ( src.y ), x, y, ESP::GetESPPlayerColor( player, bIsVisible ) );
 }
-static void DrawAimbotSpot( ) {
+
+static void DrawAimbotSpot( )
+{
         C_BasePlayer* localplayer = ( C_BasePlayer* ) entityList->GetClientEntity( engine->GetLocalPlayer() );
-        if ( !localplayer || !localplayer->GetAlive() ){
+        if ( !localplayer || !localplayer->GetAlive() )
+	{
                 Settings::Debug::AutoAim::target = {0,0,0};
                 return;
         }
-        if ( !Settings::Aimbot::AutoAim::enabled || !Settings::Aimbot::enabled ){
+        if ( !Settings::Aimbot::AutoAim::enabled || !Settings::Aimbot::enabled )
+	{
                 Settings::Debug::AutoAim::target = {0,0,0};
                 return;
         }
@@ -727,22 +758,28 @@ static void DrawAimbotSpot( ) {
 
         Vector start2D = Vector(0,0,0);
         Vector end2D;
-        if( !debugOverlay->ScreenPosition( lastRayEnd, end2D ) ){
+        if( !debugOverlay->ScreenPosition( lastRayEnd, end2D ) )
+	{
                 Draw::AddLine( start2D.x, start2D.y, end2D.x, end2D.y, ImColor( 255, 25, 25, 255 ) );
         }
 }
-static void DrawBoneMap( C_BasePlayer* player ) {
+static void DrawBoneMap( C_BasePlayer* player )
+{
         static Vector bone2D;
         static Vector bone3D;
         studiohdr_t* pStudioModel = modelInfo->GetStudioModel( player->GetModel() );
 
-        for( int i = 1; i < pStudioModel->numbones; i++ ){
+        for( int i = 1; i < pStudioModel->numbones; i++ )
+	{
                 bone3D = player->GetBonePosition( i );
                 if ( debugOverlay->ScreenPosition( bone3D, bone2D ) )
                         continue;
-                if( Settings::Debug::BoneMap::justDrawDots ){
+                if( Settings::Debug::BoneMap::justDrawDots )
+		{
                         Draw::AddCircleFilled( bone2D.x, bone2D.y, 2.0f, ImColor( 255, 0, 255, 255 ), 10 );
-                } else {
+                }
+		else
+		{
                         char buffer[32];
                         snprintf(buffer, 32, "%d", i);
                         Draw::AddText( bone2D.x, bone2D.y,buffer, ImColor( 255, 0, 255, 255 ) );
@@ -752,7 +789,9 @@ static void DrawBoneMap( C_BasePlayer* player ) {
         engine->GetPlayerInfo( player->GetIndex(), &entityInformation );
         cvar->ConsoleDPrintf( XORSTR( "(%s)-ModelName: %s, numBones: %d\n" ), entityInformation.name, pStudioModel->name, pStudioModel->numbones );
 }
-static void DrawAutoWall(C_BasePlayer *player) {
+
+static void DrawAutoWall(C_BasePlayer *player)
+{
         const std::map<int, int> *modelType = Util::GetModelTypeBoneMap(player);
         for( int i = 0; i < 31; i++ )
         {
@@ -813,7 +852,8 @@ static void DrawAutoWall(C_BasePlayer *player) {
 
 
         Autowall::FireBulletData data;
-        for ( int i = 0; i < 11; i++ ) {
+        for ( int i = 0; i < 11; i++ )
+	{
                 int damage = (int)Autowall::GetDamage( headPoints[i], !Settings::Aimbot::friendly, data );
                 char buffer[4];
                 snprintf(buffer, sizeof(buffer), "%d", damage);
@@ -840,16 +880,19 @@ static void DrawHeaddot( C_BasePlayer* player )
         Draw::AddCircleFilled( head2D.x, head2D.y, Settings::ESP::HeadDot::size, ESP::GetESPPlayerColor( player, bIsVisible ), 10 );
 }
 
-static void DrawSounds( C_BasePlayer *player, ImColor playerColor ) {
+static void DrawSounds( C_BasePlayer *player, ImColor playerColor )
+{
         std::unique_lock<std::mutex> lock( footstepMutex, std::try_to_lock );
-        if( lock.owns_lock() ){
+        if( lock.owns_lock() )
+	{
                 if ( playerFootsteps[player->GetIndex()].empty() )
                         return;
 
                 for ( auto it = playerFootsteps[player->GetIndex()].begin(); it != playerFootsteps[player->GetIndex()].end(); it++ ){
                         long diff = it->expiration - Util::GetEpochTime();
 
-                        if ( diff <= 0 ){
+                        if ( diff <= 0 )
+			{
                                 playerFootsteps[player->GetIndex()].pop_front(); // This works because footsteps are a trail.
                                 continue;
                         }
@@ -1805,20 +1848,19 @@ void ESP::Paint()
 
                 ClientClass* client = entity->GetClientClass();
 
+		if (client->m_ClassID == EClassIds::CCSPlayer && (Settings::ESP::Filters::enemies || Settings::ESP::Filters::allies || (Settings::ESP::Filters::localplayer && Settings::ThirdPerson::enabled)))
+		{
+			C_BasePlayer* player = (C_BasePlayer*) entity;
+
+			if (player->GetDormant() || !player->GetAlive())
+				continue;
+
+			DrawPlayer(player);
+		}
 		if ((client->m_ClassID != EClassIds::CBaseWeaponWorldModel && (strstr(client->m_pNetworkName, XORSTR("Weapon")) || client->m_ClassID == EClassIds::CDEagle || client->m_ClassID == EClassIds::CAK47 || client->m_ClassID == EClassIds::CBreachCharge || client->m_ClassID == EClassIds::CBumpMine)) && client->m_ClassID != EClassIds::CPhysPropWeaponUpgrade && Settings::ESP::Filters::weapons)
-                {
-                        C_BasePlayer* player = (C_BasePlayer*) entity;
-
-                        if (player->GetDormant() || !player->GetAlive())
-                                continue;
-
-                        DrawPlayer(player);
-                }
-		if ((client->m_ClassID != EClassIds::CBaseWeaponWorldModel && (strstr(client->m_pNetworkName, XORSTR("Weapon")) || client->m_ClassID == EClassIds::CDEagle || client->m_ClassID == EClassIds::CAK47)) && client->m_ClassID != EClassIds::CPhysPropWeaponUpgrade && Settings::ESP::Filters::weapons)
-                {
-                        DrawDroppedWeapons((C_BaseCombatWeapon*) entity, localplayer);
-                }
-                else if (client->m_ClassID == EClassIds::CC4 && Settings::ESP::Filters::bomb)
+		{
+			DrawDroppedWeapons((C_BaseCombatWeapon*) entity, localplayer);
+		}                else if (client->m_ClassID == EClassIds::CC4 && Settings::ESP::Filters::bomb)
                 {
 			DrawBomb((C_BaseCombatWeapon*) entity, localplayer);
                 }

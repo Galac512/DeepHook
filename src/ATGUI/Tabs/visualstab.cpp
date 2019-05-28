@@ -10,7 +10,7 @@
 void Visuals::RenderTab()
 {
         const char* BackendTypes[] = { "Surface (Valve)", "ImGUI (Custom/Faster)" };
-        const char* BoxTypes[] = { "Flat 2D", "Frame 2D", "Box 3D", "Hitboxes" };
+        const char* BoxTypes[] = { "Box 2D", "Flat 2D", "Frame 2D", "Box 3D", "Hitboxes" };
         const char* SpriteTypes[] = { "Tux" };
         const char* TracerTypes[] = { "Bottom", "Cursor" };
         const char* BarTypes[] = { "Vertical Left", "Vertical Right", "Horizontal Below", "Horizontal Above" };

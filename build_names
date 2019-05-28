@@ -903,13 +903,6 @@ libpam_misc.so
 libpam.so
 libpanel.so
 libpanelw.so
-libpango-1.0.so
-libpangocairo-1.0.so
-libpangoft2-1.0.so
-libpangomm-1.4.so
-libpangosharpglue-2.so
-libpangox-1.0.so
-libpangoxft-1.0.so
 libpaps.so
 libparted-fs-resize.so
 libparted.so

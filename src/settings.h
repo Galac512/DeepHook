@@ -60,6 +60,7 @@ enum class ChamsType : int
 
 enum class BoxType : int
 {
+	BOX,
         FLAT_2D,
         FRAME_2D,
         BOX_3D,
@@ -692,7 +693,8 @@ namespace Settings
                 {
                         extern bool enabled;
 			extern ColorVar enemyColor;
-			extern ColorVar allyColor;                }
+			extern ColorVar allyColor;
+		}
 
                 namespace Boxes
                 {
