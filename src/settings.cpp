@@ -586,6 +586,7 @@ void Settings::LoadDefaultsOrSave(std::string path)
         settings[XORSTR("Watermark")][XORSTR("enabled")] = Settings::Watermark::enabled;
 
         settings[XORSTR("NoSmoke")][XORSTR("enabled")] = Settings::NoSmoke::enabled;
+	settings[XORSTR("NoSmoke")][XORSTR("type")] = (int) Settings::NoSmoke::type;
 
         settings[XORSTR("ScreenshotCleaner")][XORSTR("enabled")] = Settings::ScreenshotCleaner::enabled;
 
@@ -1150,6 +1151,7 @@ void Settings::LoadConfig(std::string path)
         GetVal(settings[XORSTR("AutoDefuse")][XORSTR("silent")], &Settings::AutoDefuse::silent);
 
         GetVal(settings[XORSTR("NoSmoke")][XORSTR("enabled")], &Settings::NoSmoke::enabled);
+	GetVal(settings[XORSTR("NoSmoke")][XORSTR("type")], (int*)&Settings::NoSmoke::type);
 
         GetVal(settings[XORSTR("ScreenshotCleaner")][XORSTR("enabled")], &Settings::ScreenshotCleaner::enabled);
 

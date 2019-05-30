@@ -124,6 +124,12 @@ enum class WeaponType : int
 	NONE,
 };
 
+enum class SmokeType : int
+{
+	WIREFRAME,
+	NONE,
+};
+
 enum class AimTargetType : int
 {
         FOV,
@@ -1091,6 +1097,7 @@ namespace Settings
         namespace NoSmoke
         {
                 extern bool enabled;
+		extern SmokeType type;
         }
 
         namespace ScreenshotCleaner

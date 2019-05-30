@@ -5,31 +5,31 @@
 #include "../settings.h"
 #include "../interfaces.h"
 bool Settings::NoSmoke::enabled = false;
+SmokeType Settings::NoSmoke::type = SmokeType::NONE;
 
 std::vector<const char*> smoke_materials = {
-		"particle/vistasmokev1/vistasmokev1_fire",
-		"particle/vistasmokev1/vistasmokev1_smokegrenade",
-		"particle/vistasmokev1/vistasmokev1_emods",
-		"particle/vistasmokev1/vistasmokev1_emods_impactdust",
+	"particle/vistasmokev1/vistasmokev1_fire",
+	"particle/vistasmokev1/vistasmokev1_smokegrenade",
+	"particle/vistasmokev1/vistasmokev1_emods",
+	"particle/vistasmokev1/vistasmokev1_emods_impactdust",
 };
-
 
 void NoSmoke::Cleanup()
 {
 	for (auto material_name : smoke_materials)
 	{
-		IMaterial* mat = material->FindMaterial(material_name, TEXTURE_GROUP_OTHER);
+		IMaterial* mat = material->FindMaterial(material_name, TEXTURE_GROUP_CLIENT_EFFECTS);
 		mat->SetMaterialVarFlag(MATERIAL_VAR_NO_DRAW, false);
+		mat->SetMaterialVarFlag(MATERIAL_VAR_WIREFRAME, false);
 	}
 }
-
-
-
 
 bool NoSmoke::RenderSmokePostViewmodel()
 {
 	return Settings::ESP::enabled && Settings::NoSmoke::enabled;
 }
+
+// TODO: Fix material bug when enabling NoSmoke inside a smoke.
 void NoSmoke::FrameStageNotify(ClientFrameStage_t stage)
 {
 	if (!engine->IsInGame())
@@ -40,7 +40,8 @@ void NoSmoke::FrameStageNotify(ClientFrameStage_t stage)
 
 	for (auto material_name : smoke_materials)
 	{
-		IMaterial* mat = material->FindMaterial(material_name, TEXTURE_GROUP_OTHER);
-		mat->SetMaterialVarFlag(MATERIAL_VAR_NO_DRAW, Settings::ESP::enabled && Settings::NoSmoke::enabled);
+		IMaterial* mat = material->FindMaterial(material_name, TEXTURE_GROUP_CLIENT_EFFECTS);
+		mat->SetMaterialVarFlag(MATERIAL_VAR_WIREFRAME, !Settings::ESP::enabled || !Settings::NoSmoke::enabled ? false : Settings::NoSmoke::type == SmokeType::WIREFRAME);
+		mat->SetMaterialVarFlag(MATERIAL_VAR_NO_DRAW, !Settings::ESP::enabled || !Settings::NoSmoke::enabled ? false : Settings::NoSmoke::type == SmokeType::NONE);
 	}
 }
